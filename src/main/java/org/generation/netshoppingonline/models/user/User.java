@@ -17,7 +17,7 @@ import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 
 /**
  *
- * @author jft
+ * @author JesusFloresTemahuay
  */
 @Entity
 @Table(name = "users")

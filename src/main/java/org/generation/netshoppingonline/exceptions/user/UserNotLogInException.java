@@ -6,7 +6,7 @@ package org.generation.netshoppingonline.exceptions.user;
 
 /**
  *
- * @author a2s4t0r1f1
+ * @author JesusFloresTemahuay
  */
 public class UserNotLogInException extends RuntimeException{
 
