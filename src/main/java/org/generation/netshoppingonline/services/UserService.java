@@ -33,7 +33,9 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public User findById(int id) throws UserNotFoundException, NoSuchElementException {
+    public User findById(int id) throws
+            UserNotFoundException,
+            NoSuchElementException {
         User u = userRepository.findById(id).get();
         if (u != null) {
             return u;
@@ -59,7 +61,7 @@ public class UserService {
         }
         return u;
     }
-    
+
     public User findByNickname(String nickname) throws UserNotFoundException {
         User u = userRepository.findByNickname(nickname);
 
@@ -91,7 +93,7 @@ public class UserService {
     public User update(User user) throws UserNotCreatedException {
         user.setUpdated();
         User u = userRepository.save(user);
-        
+
         if (u != null) {
             return u;
         } else {
@@ -99,22 +101,32 @@ public class UserService {
         }
     }
 
-    public void hardDelete(User user) throws UserNotDeleteException {
+    public void hardDelete(int id) throws
+            UserNotDeleteException,
+            NoSuchElementException {
 
-        boolean userExist = findById(user.getId()) != null;
+        User userExist = findById(id);
 
-        if (userExist) {
-            userRepository.delete(user);
+        if (userExist != null) {
+            userRepository.delete(userExist);
         } else {
             throw new UserNotDeleteException();
         }
     }
 
-    public void softDelete(User user) throws UserNotDeleteException {
-        boolean userExist = findById(user.getId()) != null;
-        if (userExist) {
-            user.setDeleted();
-            userRepository.save(user);
+    public void softDelete(int id) throws
+            UserNotDeleteException,
+            NoSuchElementException {
+
+        User userExist = findById(id);
+
+        if (userExist != null) {
+            if (userExist.getDeleted() == null) {
+                userExist.setDeleted();
+                userRepository.save(userExist);
+            } else {
+                throw new NoSuchElementException();
+            }
         } else {
             throw new UserNotDeleteException();
         }

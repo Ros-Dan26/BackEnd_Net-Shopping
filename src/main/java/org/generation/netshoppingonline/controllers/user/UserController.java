@@ -144,13 +144,30 @@ public class UserController implements UserEndPoints {
         }
     }
 
+    /**
+     * En este metodo los atributos email, nickname, phone y movile no se
+     * actualizan debido a la restriccion en la base de datos. Se tendria que
+     * crear un endpoint para cada campo para evitar un error interno de
+     * servidor
+     *
+     * @param user
+     * @return
+     */
     @PutMapping(UPDATE)
     public ResponseEntity<?> update(@RequestBody User user) {
         User u = null;
         URI uri = null;
 
         try {
-            u = userService.update(user);
+            User last = (User) findById(user.getId()).getBody();
+            last.setFirstName(user.getFirstName());
+            last.setGendersId(user.getGendersId());
+            last.setLastName(user.getLastName());
+            last.setMiddleName(last.getMiddleName());
+            last.setPassword(user.getPassword());
+            last.setPreferences(user.getPreferences());
+            u = userService.save(last);
+
             uri = ServletUriComponentsBuilder.
                     fromCurrentRequest().
                     path(SAVE + PARAM_USER)
@@ -161,35 +178,42 @@ public class UserController implements UserEndPoints {
         } catch (UserNotCreatedException e) {
             System.out.println(e);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
-
-    }
-
-    @DeleteMapping(HARD_DELETE)
-    public ResponseEntity<?> hardDelete(@RequestBody User user) {
-        try {
-            userService.hardDelete(user);
-            return ResponseEntity.ok().body("User: " + user + " deleted");
-        } catch (UserNotDeleteException e) {
-            System.out.println(e);
-            return ResponseEntity.notFound().build();
-        } catch (UserNotFoundException e) {
+        } catch (NoSuchElementException e) {
             System.out.println(e);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        } catch (NullPointerException e) {
+            System.out.println(e);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 
-    @PutMapping(SOFT_DELETE)
-    public ResponseEntity<?> softDelete(@RequestBody User user) {
+    @DeleteMapping(HARD_DELETE + PARAM_ID)
+    public ResponseEntity<?> hardDelete(@PathVariable int id) {
         try {
-            userService.softDelete(user);
-            return ResponseEntity.ok().body("User: " + user._FullName() + " deleted");
+            userService.hardDelete(id);
+            return ResponseEntity.ok().build();
         } catch (UserNotDeleteException e) {
             System.out.println(e);
-            return ResponseEntity.notFound().build();
-        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+
+        } catch (NoSuchElementException e) {
             System.out.println(e);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
+    @PutMapping(SOFT_DELETE + PARAM_ID)
+    public ResponseEntity<?> softDelete(@PathVariable int id) {
+        try {
+            userService.softDelete(id);
+            return ResponseEntity.ok().build();
+        } catch (UserNotDeleteException e) {
+            System.out.println(e);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+
+        } catch (NoSuchElementException e) {
+            System.out.println(e);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 
