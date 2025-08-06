@@ -5,9 +5,11 @@
 package org.generation.netshoppingonline.services;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import org.generation.netshoppingonline.exceptions.user.UserNotCreatedException;
 import org.generation.netshoppingonline.exceptions.user.UserNotDeleteException;
 import org.generation.netshoppingonline.exceptions.user.UserNotFoundException;
+import org.generation.netshoppingonline.exceptions.user.UserNotLogInException;
 import org.generation.netshoppingonline.models.user.User;
 import org.generation.netshoppingonline.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,12 +33,8 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public User findById(int id) {
-        User u
-                = userRepository.
-                        findAll().stream().
-                        filter(user -> user.getId() == id).
-                        findFirst().orElseThrow();
+    public User findById(int id) throws UserNotFoundException, NoSuchElementException {
+        User u = userRepository.findById(id).get();
         if (u != null) {
             return u;
         } else {
@@ -44,11 +42,8 @@ public class UserService {
         }
     }
 
-    public User findByEmail(String email) {
-        User u = userRepository.
-                findAll().stream().
-                filter(user -> user.getEmail().equalsIgnoreCase(email)).
-                findFirst().orElseThrow();
+    public User findByEmail(String email) throws UserNotFoundException {
+        User u = userRepository.findByEmail(email);
         if (u != null) {
             return u;
         } else {
@@ -56,11 +51,26 @@ public class UserService {
         }
     }
 
-    public User findByPhone(String phone) {
-        User u = userRepository.
-                findAll().stream().
-                filter(user -> user.getPhone().equalsIgnoreCase(phone)).
-                findFirst().orElseThrow();
+    public User findByPhone(String phone) throws UserNotFoundException {
+        User u = userRepository.findByPhone(phone);
+
+        if (u == null) {
+            throw new UserNotFoundException();
+        }
+        return u;
+    }
+    
+    public User findByNickname(String nickname) throws UserNotFoundException {
+        User u = userRepository.findByNickname(nickname);
+
+        if (u == null) {
+            throw new UserNotFoundException();
+        }
+        return u;
+    }
+
+    public User findByMovil(String movil) throws UserNotFoundException {
+        User u = userRepository.findByMobile(movil);
         if (u != null) {
             return u;
         } else {
@@ -68,45 +78,22 @@ public class UserService {
         }
     }
 
-    public User findByMovil(String movil) {
-        User u = userRepository.
-                findAll().stream().
-                filter(user -> user.getMobile().equalsIgnoreCase(movil)).
-                findFirst().orElseThrow();
+    public User save(User user) throws UserNotCreatedException {
+        User u = userRepository.save(user);
+
         if (u != null) {
             return u;
         } else {
-            throw new UserNotFoundException();
+            throw new UserNotCreatedException();
         }
     }
 
-    public User save(User user) {
+    public User update(User user) throws UserNotCreatedException {
         User u = null;
         boolean emailExist = findByEmail(user.getEmail()) != null;
         boolean movilExist = findByMovil(user.getMobile()) != null;
         boolean phoneExist = findByPhone(user.getPhone()) != null;
-
-        if (!emailExist
-                || !movilExist
-                || !phoneExist) {
-            u = userRepository.save(user);
-        }
-        if (u != null) {
-            return u;
-        } else {
-            throw new UserNotCreatedException(
-                    UserNotCreatedException.generateDetails(
-                            emailExist,
-                            movilExist,
-                            phoneExist));
-        }
-    }
-
-    public User update(User user) {
-        User u = null;
-        boolean emailExist = findByEmail(user.getEmail()) != null;
-        boolean movilExist = findByMovil(user.getMobile()) != null;
-        boolean phoneExist = findByPhone(user.getPhone()) != null;
+        boolean nicknameExist = findByNickname(user.getPhone()) != null;
 
         if (!emailExist
                 || !movilExist
@@ -119,11 +106,12 @@ public class UserService {
                     UserNotCreatedException.generateDetails(
                             emailExist,
                             movilExist,
-                            phoneExist));
+                            phoneExist,
+                            nicknameExist));
         }
     }
 
-    public void hardDelete(User user) {
+    public void hardDelete(User user) throws UserNotDeleteException {
 
         boolean userExist = findById(user.getId()) != null;
 
@@ -134,13 +122,29 @@ public class UserService {
         }
     }
 
-    public void softDelete(User user) {
+    public void softDelete(User user) throws UserNotDeleteException {
         boolean userExist = findById(user.getId()) != null;
         if (userExist) {
             user.setDeleted();
             userRepository.save(user);
         } else {
             throw new UserNotDeleteException();
+        }
+    }
+
+    public User login(String email, String password) throws UserNotLogInException {
+        User u = userRepository.
+                findAll().
+                stream().
+                filter(user
+                        -> user.getEmail().equals(email)
+                && user.getPassword().equals(password)).
+                findFirst().
+                orElseThrow();
+        if (u == null) {
+            throw new UserNotLogInException();
+        } else {
+            return u;
         }
     }
 }

@@ -20,6 +20,7 @@ public interface UserEndPoints {
     String UPDATE = "/update";
     String HARD_DELETE = "/hdelete";
     String SOFT_DELETE = "/sdelete";
+    String LOGIN = "/login";
     
     
     String PARAM_USER = "/{user}";
@@ -27,5 +28,6 @@ public interface UserEndPoints {
     String PARAM_EMAIL = "/email/{email}";
     String PARAM_PHONE = "/phone/{phone}";
     String PARAM_MOVIL = "/movil/{movil}";
+    String PARAM_NICKNAME = "/nickname/{nickname}";
     
 }

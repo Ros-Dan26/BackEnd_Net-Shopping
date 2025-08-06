@@ -10,6 +10,8 @@ package org.generation.netshoppingonline.exceptions.user;
  */
 public class UserNotCreatedException extends RuntimeException {
 
+    public UserNotCreatedException() {
+    }
 
     public UserNotCreatedException(String message) {
         super(message);
@@ -29,18 +31,23 @@ public class UserNotCreatedException extends RuntimeException {
 
     public static String generateDetails(boolean emailExist,
             boolean movilExist,
-            boolean phoneExist) {
-        String details = "Usuario no pudo ser creado ni guardado: ";
+            boolean phoneExist,
+            boolean nickname) {
+        
+        StringBuilder details = new StringBuilder("Usuario no pudo ser creado ni guardado: ");
         if (emailExist) {
-            details = details.concat("El email existe. ");
+            details.append("El email existe. ");
         }
         if (movilExist) {
-            details = details.concat("El telefono celular existe. ");
+            details.append("El telefono celular existe. ");
         }
         if (phoneExist) {
-            details = details.concat("El telefono fijo existe. ");
+            details.append("El telefono fijo existe. ");
         }
-        return details;
+        if (nickname) {
+            details.append("El nombre de usuario existe. ");
+        }
+        return details.toString();
     }
 
 }
