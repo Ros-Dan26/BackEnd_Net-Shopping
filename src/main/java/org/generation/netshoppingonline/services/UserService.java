@@ -89,25 +89,13 @@ public class UserService {
     }
 
     public User update(User user) throws UserNotCreatedException {
-        User u = null;
-        boolean emailExist = findByEmail(user.getEmail()) != null;
-        boolean movilExist = findByMovil(user.getMobile()) != null;
-        boolean phoneExist = findByPhone(user.getPhone()) != null;
-        boolean nicknameExist = findByNickname(user.getPhone()) != null;
-
-        if (!emailExist
-                || !movilExist
-                || !phoneExist) {
-
-            user.setUpdated();
-            return userRepository.save(user);
+        user.setUpdated();
+        User u = userRepository.save(user);
+        
+        if (u != null) {
+            return u;
         } else {
-            throw new UserNotCreatedException(
-                    UserNotCreatedException.generateDetails(
-                            emailExist,
-                            movilExist,
-                            phoneExist,
-                            nicknameExist));
+            throw new UserNotCreatedException();
         }
     }
 

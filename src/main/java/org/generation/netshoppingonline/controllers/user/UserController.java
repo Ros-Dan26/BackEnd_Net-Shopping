@@ -52,7 +52,7 @@ public class UserController implements UserEndPoints {
         try {
             u = userService.findById(id);
             System.out.println("id:" + id);
-            return ResponseEntity.ok().body(u);
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(u);
 
         } catch (UserNotFoundException e) {
             System.out.println(e);
@@ -69,7 +69,7 @@ public class UserController implements UserEndPoints {
         try {
             u = userService.findByEmail(email);
             System.out.println("email:" + email);
-            return ResponseEntity.ok().body(u);
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(u);
 
         } catch (UserNotFoundException e) {
             System.out.println(e);
@@ -84,7 +84,7 @@ public class UserController implements UserEndPoints {
         try {
             u = userService.findByPhone(phone);
             System.out.println("phone:" + phone);
-            return ResponseEntity.ok().body(u);
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(u);
 
         } catch (UserNotFoundException e) {
             System.out.println(e);
@@ -99,7 +99,7 @@ public class UserController implements UserEndPoints {
         try {
             u = userService.findByMovil(movil);
             System.out.println("movil:" + movil);
-            return ResponseEntity.ok().body(u);
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(u);
 
         } catch (UserNotFoundException e) {
             System.out.println(e);
@@ -113,7 +113,7 @@ public class UserController implements UserEndPoints {
         try {
             u = userService.findByNickname(nickname);
             System.out.println("nickname:" + nickname);
-            return ResponseEntity.ok().body(u);
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(u);
 
         } catch (UserNotFoundException e) {
             System.out.println(e);
@@ -126,26 +126,8 @@ public class UserController implements UserEndPoints {
         User u = null;
         URI uri = null;
 
-        boolean emailExist
-                = findByEmail(user.getEmail()).getStatusCode()
-                == HttpStatus.ACCEPTED;
-        boolean movilExist
-                = findByMovil(user.getMobile()).getStatusCode()
-                == HttpStatus.ACCEPTED;
-        boolean phoneExist
-                = findByPhone(user.getPhone()).getStatusCode()
-                == HttpStatus.ACCEPTED;
-        boolean nicknameExist
-                = findByNickname(user.getNickname()).getStatusCode()
-                == HttpStatus.ACCEPTED;
         try {
-
-            /*
-            if (!emailExist
-                    && !movilExist
-                    && !phoneExist
-                    && !nicknameExist) {
-
+            if (!isExistUniqueParams(user)) {
                 u = userService.save(user);
                 uri = ServletUriComponentsBuilder.
                         fromCurrentRequest().
@@ -153,40 +135,30 @@ public class UserController implements UserEndPoints {
                         .buildAndExpand(user.toString())
                         .toUri();
                 return ResponseEntity.created(uri).body(u);
+            } else {
+                return ResponseEntity.status(HttpStatus.CONFLICT).build();
             }
-            return ResponseEntity.notFound().build();
-            
-             */
-            System.out.println(UserNotCreatedException.generateDetails(
-                    emailExist,
-                    movilExist,
-                    phoneExist, nicknameExist));
         } catch (UserNotCreatedException e) {
-            System.out.println(UserNotCreatedException.generateDetails(
-                    emailExist,
-                    movilExist,
-                    phoneExist, 
-                    nicknameExist));
+            System.out.println(e);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
     @PutMapping(UPDATE)
     public ResponseEntity<?> update(@RequestBody User user) {
-        User u;
+        User u = null;
+        URI uri = null;
+
         try {
             u = userService.update(user);
-            URI uri = ServletUriComponentsBuilder.
+            uri = ServletUriComponentsBuilder.
                     fromCurrentRequest().
                     path(SAVE + PARAM_USER)
                     .buildAndExpand(user.toString())
                     .toUri();
             return ResponseEntity.created(uri).body(u);
+
         } catch (UserNotCreatedException e) {
-            System.out.println(e);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        } catch (UserNotFoundException e) {
             System.out.println(e);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
@@ -220,12 +192,10 @@ public class UserController implements UserEndPoints {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
-    
+
     /*
     22323231
-    */
-    
-
+     */
     @PostMapping(LOGIN)
     public ResponseEntity<?> login(
             @RequestParam String email,
@@ -241,5 +211,28 @@ public class UserController implements UserEndPoints {
             System.out.println(e);
             return ResponseEntity.notFound().build();
         }
+    }
+
+    private boolean isExistUniqueParams(User user) {
+        boolean emailExist
+                = findByEmail(user.getEmail()).getStatusCode()
+                == HttpStatus.ACCEPTED;
+        boolean movilExist
+                = findByMovil(user.getMobile()).getStatusCode()
+                == HttpStatus.ACCEPTED;
+        boolean phoneExist
+                = findByPhone(user.getPhone()).getStatusCode()
+                == HttpStatus.ACCEPTED;
+        boolean nicknameExist
+                = findByNickname(user.getNickname()).getStatusCode()
+                == HttpStatus.ACCEPTED;
+        System.out.println(emailExist
+                + " " + movilExist
+                + " " + phoneExist
+                + " " + nicknameExist);
+        return emailExist
+                || movilExist
+                || phoneExist
+                || nicknameExist;
     }
 }

@@ -11,6 +11,7 @@ package org.generation.netshoppingonline.exceptions.user;
 public class UserNotCreatedException extends RuntimeException {
 
     public UserNotCreatedException() {
+        super("Usuario no se pudo crear.");
     }
 
     public UserNotCreatedException(String message) {
@@ -47,6 +48,7 @@ public class UserNotCreatedException extends RuntimeException {
         if (nickname) {
             details.append("El nombre de usuario existe. ");
         }
+        details.append(";");
         return details.toString();
     }
 
