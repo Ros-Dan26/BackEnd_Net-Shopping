@@ -11,7 +11,7 @@ import org.generation.netshoppingonline.exceptions.user.UserNotDeleteException;
 import org.generation.netshoppingonline.exceptions.user.UserNotFoundException;
 import org.generation.netshoppingonline.exceptions.user.UserNotLogInException;
 import org.generation.netshoppingonline.models.user.User;
-import org.generation.netshoppingonline.services.UserService;
+import org.generation.netshoppingonline.services.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Interface.java to edit this template
  */
-package org.generation.netshoppingonline.repositories;
+package org.generation.netshoppingonline.repositories.user;
 
 import org.generation.netshoppingonline.models.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;

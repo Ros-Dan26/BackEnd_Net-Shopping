@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package org.generation.netshoppingonline.services;
+package org.generation.netshoppingonline.services.user;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -11,7 +11,7 @@ import org.generation.netshoppingonline.exceptions.user.UserNotDeleteException;
 import org.generation.netshoppingonline.exceptions.user.UserNotFoundException;
 import org.generation.netshoppingonline.exceptions.user.UserNotLogInException;
 import org.generation.netshoppingonline.models.user.User;
-import org.generation.netshoppingonline.repositories.UserRepository;
+import org.generation.netshoppingonline.repositories.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
