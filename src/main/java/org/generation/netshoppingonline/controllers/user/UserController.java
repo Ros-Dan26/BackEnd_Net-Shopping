@@ -230,11 +230,8 @@ public class UserController implements UserEndPoints {
             return ResponseEntity.ok().body(u);
         } catch (UserNotLogInException e) {
             System.out.println(e);
-            return ResponseEntity.notFound().build();
-        } catch (UserNotFoundException e) {
-            System.out.println(e);
-            return ResponseEntity.notFound().build();
-        }
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        } 
     }
 
     private boolean isExistUniqueParams(User user) {

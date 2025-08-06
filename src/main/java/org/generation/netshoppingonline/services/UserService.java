@@ -133,14 +133,7 @@ public class UserService {
     }
 
     public User login(String email, String password) throws UserNotLogInException {
-        User u = userRepository.
-                findAll().
-                stream().
-                filter(user
-                        -> user.getEmail().equals(email)
-                && user.getPassword().equals(password)).
-                findFirst().
-                orElseThrow();
+        User u = userRepository.login(email, password);
         if (u == null) {
             throw new UserNotLogInException();
         } else {
