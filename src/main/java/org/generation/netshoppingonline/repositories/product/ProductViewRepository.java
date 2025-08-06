@@ -14,7 +14,8 @@ import org.springframework.stereotype.Repository;
  * @author JesusFloresTemahuay
  */
 @Repository
-public interface ProductViewRepository extends JpaRepository<ProductView, Integer>{
-    @Query("SELECT u FROM product_view WHERE u.id=?1")
-    ProductView findById(int id);
+public interface ProductViewRepository extends JpaRepository<ProductView, Integer> {
+
+   
+
 }

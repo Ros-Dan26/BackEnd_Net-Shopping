@@ -30,8 +30,6 @@ public class ProductView {
     private String status;
     @Column
     private String brand;
-    @Column(name = "gender_product")
-    private String genderProduct;
     @Column(name = "color_product")
     private String colorProduct;
     @Column
@@ -40,11 +38,11 @@ public class ProductView {
     private String name;
     @Column
     private String model;
-    @Column
+    @Column(columnDefinition = "VARCHAR(255)")
     private String description;
     @Column
     private String details;
-    @Column
+    @Column(columnDefinition = "DECMAL(8,2")
     private double price;
     @Column
     @Convert(converter = Jsr310JpaConverters.LocalDateTimeConverter.class)
@@ -79,7 +77,6 @@ public class ProductView {
         this.user = user;
         this.status = status;
         this.brand = brand;
-        this.genderProduct = genderProduct;
         this.colorProduct = colorProduct;
         this.code = code;
         this.name = name;
@@ -106,10 +103,6 @@ public class ProductView {
 
     public String getBrand() {
         return brand;
-    }
-
-    public String getGenderProduct() {
-        return genderProduct;
     }
 
     public String getColorProduct() {
@@ -158,7 +151,6 @@ public class ProductView {
                 + ", user=" + user
                 + ", status=" + status
                 + ", brand=" + brand
-                + ", genderProduct=" + genderProduct
                 + ", colorProduct=" + colorProduct
                 + ", code=" + code
                 + ", name=" + name
@@ -178,7 +170,6 @@ public class ProductView {
         hash = 37 * hash + Objects.hashCode(this.user);
         hash = 37 * hash + Objects.hashCode(this.status);
         hash = 37 * hash + Objects.hashCode(this.brand);
-        hash = 37 * hash + Objects.hashCode(this.genderProduct);
         hash = 37 * hash + Objects.hashCode(this.colorProduct);
         hash = 37 * hash + Objects.hashCode(this.code);
         hash = 37 * hash + Objects.hashCode(this.name);
@@ -217,9 +208,6 @@ public class ProductView {
             return false;
         }
         if (!Objects.equals(this.brand, other.brand)) {
-            return false;
-        }
-        if (!Objects.equals(this.genderProduct, other.genderProduct)) {
             return false;
         }
         if (!Objects.equals(this.colorProduct, other.colorProduct)) {

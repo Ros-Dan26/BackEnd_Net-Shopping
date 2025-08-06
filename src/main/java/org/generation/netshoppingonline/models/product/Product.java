@@ -35,8 +35,6 @@ public class Product {
     private int idSize;
     @Column(name = "id_brand")
     private int idBrand;
-    @Column(name = "id_gender_product")
-    private int idGenderProduct;
     @Column(name = "id_color")
     private int idColor;
     @Column
@@ -47,7 +45,7 @@ public class Product {
     private String description;
     @Column
     private String details;
-    @Column
+    @Column(columnDefinition = "DECIMAL(8,2)")
     private double price;
     @Column
     @Convert(converter = Jsr310JpaConverters.LocalDateTimeConverter.class)
@@ -73,7 +71,6 @@ public class Product {
             int idStatus,
             int idSize,
             int idBrand,
-            int idGenderProduct,
             int idColor,
             String name,
             String model,
@@ -88,7 +85,6 @@ public class Product {
         this.idStatus = idStatus;
         this.idSize = idSize;
         this.idBrand = idBrand;
-        this.idGenderProduct = idGenderProduct;
         this.idColor = idColor;
         this.name = name;
         this.model = model;
@@ -135,15 +131,6 @@ public class Product {
     public void setIdBrand(int idBrand) {
         this.idBrand = idBrand;
     }
-
-    public int getIdGenderProduct() {
-        return idGenderProduct;
-    }
-
-    public void setIdGenderProduct(int idGenderProduct) {
-        this.idGenderProduct = idGenderProduct;
-    }
-
     public int getIdColor() {
         return idColor;
     }
@@ -225,7 +212,6 @@ public class Product {
                 ", idStatus=" + idStatus + 
                 ", idSize=" + idSize + 
                 ", idBrand=" + idBrand +
-                ", idGenderProduct=" + idGenderProduct +
                 ", idColor=" + idColor + 
                 ", name=" + name + 
                 ", model=" + model + 
@@ -245,7 +231,6 @@ public class Product {
         hash = 37 * hash + this.idStatus;
         hash = 37 * hash + this.idSize;
         hash = 37 * hash + this.idBrand;
-        hash = 37 * hash + this.idGenderProduct;
         hash = 37 * hash + this.idColor;
         hash = 37 * hash + Objects.hashCode(this.name);
         hash = 37 * hash + Objects.hashCode(this.model);
@@ -283,9 +268,6 @@ public class Product {
             return false;
         }
         if (this.idBrand != other.idBrand) {
-            return false;
-        }
-        if (this.idGenderProduct != other.idGenderProduct) {
             return false;
         }
         if (this.idColor != other.idColor) {
