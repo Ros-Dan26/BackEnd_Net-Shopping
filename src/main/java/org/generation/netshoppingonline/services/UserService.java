@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 
 /**
  *
- * @author jft
+ * @author JesusFloresTemahuay
  */
 @Service
 public class UserService {
