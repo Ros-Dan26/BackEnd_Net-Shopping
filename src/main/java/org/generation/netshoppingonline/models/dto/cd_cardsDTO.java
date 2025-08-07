@@ -1,11 +1,13 @@
 package org.generation.netshoppingonline.models.dto;
 
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import org.generation.netshoppingonline.models.user.User;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-public class cd_cadrdsDTO {
+public class cd_cardsDTO {
     private Long id;
     private Long id_user;
     private Long id_Bank;
@@ -16,7 +18,7 @@ public class cd_cadrdsDTO {
 
     // constructor vacio
 
-    public cd_cadrdsDTO() {
+    public cd_cardsDTO() {
     }
 
     // Getters & setters
@@ -88,7 +90,7 @@ public class cd_cadrdsDTO {
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof cd_cadrdsDTO that)) return false;
+        if (!(o instanceof cd_cardsDTO that)) return false;
         return Objects.equals(id, that.id) && Objects.equals(id_user, that.id_user) && Objects.equals(id_Bank, that.id_Bank) && Objects.equals(cardholder_name, that.cardholder_name) && Objects.equals(card_number, that.card_number) && Objects.equals(expiratio_date, that.expiratio_date);
     }
 
@@ -101,5 +103,15 @@ public class cd_cadrdsDTO {
     // relacion de cd_cadrdsDTO con user 1:N
     // ------------------------------
     @ManyToOne
+    @JoinColumn(name = "id_user")
+    private User user;
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
 }

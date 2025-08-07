@@ -1,14 +1,17 @@
 package org.generation.netshoppingonline.models.dto;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import org.generation.netshoppingonline.models.user.User;
 
 import java.util.Objects;
 
 @Entity
 @Table(name = "bank_transfer")
 
-public class bank_transfers {
+public class bank_transfersDTO {
     private Long id;
     private Long id_user;
     private Long id_banck;
@@ -17,12 +20,12 @@ public class bank_transfers {
 
     // contructor vacio
 
-    public bank_transfers() {
+    public bank_transfersDTO() {
     }
     // metodo constructor
 
 
-    public bank_transfers(Long id, Long id_user, Long id_banck, Long identification_number, String details) {
+    public bank_transfersDTO(Long id, Long id_user, Long id_banck, Long identification_number, String details) {
         this.id = id;
         this.id_user = id_user;
         this.id_banck = id_banck;
@@ -87,7 +90,7 @@ public class bank_transfers {
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof bank_transfers that)) return false;
+        if (!(o instanceof bank_transfersDTO that)) return false;
         return Objects.equals(id, that.id) && Objects.equals(id_user, that.id_user) && Objects.equals(id_banck, that.id_banck) && Objects.equals(identification_number, that.identification_number) && Objects.equals(details, that.details);
     }
 
@@ -95,5 +98,20 @@ public class bank_transfers {
     public int hashCode() {
         return Objects.hash(id, id_user, id_banck, identification_number, details);
     }
-    
+
+    // ------------------------------
+    // relacion de bannk_transfersDTO con user 1:N
+    // ------------------------------
+    @ManyToOne
+    @JoinColumn(name = "id_user")
+    private User user;
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
 }
