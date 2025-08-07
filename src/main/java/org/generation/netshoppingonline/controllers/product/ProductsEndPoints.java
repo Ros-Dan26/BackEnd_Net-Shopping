@@ -4,8 +4,6 @@
  */
 package org.generation.netshoppingonline.controllers.product;
 
-import org.generation.netshoppingonline.controllers.user.*;
-
 /**
  *
  * @author jft
@@ -13,6 +11,9 @@ import org.generation.netshoppingonline.controllers.user.*;
 public interface ProductsEndPoints {
     
     String ROOT = "/api/v1/nso";
+    String DIRECTORY = "/nso/bin";
+    String URL_SERVER = "http://jft314.ddns.net";
+    String LOCAL_PATH ="/var/www/html/jftlab%s/%d";
     
     String PRODUCT_VIEW = "/product";
     
@@ -26,6 +27,8 @@ public interface ProductsEndPoints {
     
     
     String PARAM_PRODUCT = "/{product}";
+    String PARAM_IMAGES = "/images/{id}";
+    String ADD_IMAGE_URL = "/add/image";
+    String ADD_IMAGE_FILE = "/add/file";
 
-    
 }

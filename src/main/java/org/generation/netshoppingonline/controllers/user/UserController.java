@@ -217,9 +217,7 @@ public class UserController implements UserEndPoints {
         }
     }
 
-    /*
-    22323231
-     */
+
     @PostMapping(LOGIN)
     public ResponseEntity<?> login(
             @RequestParam String email,
