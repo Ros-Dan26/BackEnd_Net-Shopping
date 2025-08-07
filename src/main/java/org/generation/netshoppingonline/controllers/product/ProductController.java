@@ -91,12 +91,10 @@ public class ProductController implements ProductsEndPoints {
     /**
      * Este metodo se encarga de recibir un archivo binario y un texto que
      * representan la imagen y el id del producto respectivamente, el archivo se
-     * espera que sea de imagen pero no tiene restriccion, seria necesario
-     * agregarla desde el frontend y en un futuro agregar la restriccion de tipo
-     * de archvo y tamanio del archivo, el id debe de existir en el producto
-     * para que sea agregado a la base de datos, adicional a ello proporciona
-     * desde el backend el acceso al archivo desde el servidor por el puerto 80
-     * para que funcione en cualquier parte del mundo.
+     * espera que sea de imagen, el id debe de existir en el producto para que
+     * sea agregado a la base de datos, adicional a ello proporciona desde el
+     * backend el acceso al archivo desde el servidor por el puerto 80 para que
+     * funcione en cualquier parte del mundo.
      *
      * @param multipartFile
      * @param id
@@ -107,46 +105,57 @@ public class ProductController implements ProductsEndPoints {
             @RequestParam("file") MultipartFile multipartFile,
             @RequestParam("id") int id) {
         URI uri = null;
-        if (multipartFile.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).
-                    body("Imagen daniada");
-        }
-        try {
-            String pathString = String.format(
-                    LOCAL_PATH,
-                    DIRECTORY,
-                    id);
-            Path path = Path.of(pathString);
-            if (!Files.exists(path)) {
-                Files.createDirectories(path);
-            }
-            String pathPublic = URL_SERVER.
-                    concat(DIRECTORY).
-                    concat(File.separator).
-                    concat(String.valueOf(id)).
-                    concat(File.separator).
-                    concat(multipartFile.getOriginalFilename());
-            pathString = pathString.
-                    concat(File.separator).
-                    concat(multipartFile.getOriginalFilename());
 
-            System.out.println("upload image to: " + pathString);
-            System.out.println("Public access: " + pathPublic);
-            File destinationFile = new File(pathString);
-            multipartFile.transferTo(destinationFile);
-            imageViewService.addImageToProducto(pathPublic, id);
-            uri = ServletUriComponentsBuilder.
-                    fromCurrentRequest().
-                    path(pathString)
-                    .buildAndExpand(multipartFile.toString())
-                    .toUri();
-            return ResponseEntity.created(uri).
-                    body("Imagen agregada correctamente.");
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        } catch (ImageNotAddException e) {
-            System.out.println(e);
-            return ResponseEntity.notFound().build();
+        if (ALLOWED_MIME.contains(multipartFile.getContentType())) {
+
+            if (multipartFile.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).
+                        body("Imagen daniada");
+            }
+            try {
+                String pathString = String.format(
+                        LOCAL_PATH,
+                        DIRECTORY,
+                        id);
+                Path path = Path.of(pathString);
+                if (!Files.exists(path)) {
+                    Files.createDirectories(path);
+                }
+                String pathPublic = URL_SERVER.
+                        concat(DIRECTORY).
+                        concat(File.separator).
+                        concat(String.valueOf(id)).
+                        concat(File.separator).
+                        concat(multipartFile.getOriginalFilename());
+                pathString = pathString.
+                        concat(File.separator).
+                        concat(multipartFile.getOriginalFilename());
+
+                System.out.println("upload image to: " + pathString);
+                System.out.println("Public access: " + pathPublic);
+
+                imageViewService.addImageToProducto(pathPublic, id);
+
+                File destinationFile = new File(pathString);
+                multipartFile.transferTo(destinationFile);
+
+                uri = ServletUriComponentsBuilder.
+                        fromCurrentRequest().
+                        path(pathString)
+                        .buildAndExpand(multipartFile.toString())
+                        .toUri();
+                return ResponseEntity.created(uri).
+                        body("Imagen agregada correctamente.");
+            } catch (IOException e) {
+                return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
+                        .body("Archivo corrupto: " + multipartFile.getContentType());
+            } catch (ImageNotAddException e) {
+                System.out.println(e);
+                return ResponseEntity.notFound().build();
+            }
+        } else {
+            return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+                    .body("Tipo de archivo no permitido: " + multipartFile.getContentType());
         }
     }
 }

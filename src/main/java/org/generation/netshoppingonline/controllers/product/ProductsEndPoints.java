@@ -4,6 +4,9 @@
  */
 package org.generation.netshoppingonline.controllers.product;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  *
  * @author jft
@@ -30,5 +33,16 @@ public interface ProductsEndPoints {
     String PARAM_IMAGES = "/images/{id}";
     String ADD_IMAGE_URL = "/add/image";
     String ADD_IMAGE_FILE = "/add/file";
+    
+    
+    
+    //Constantes
+    List<String> ALLOWED_MIME = Arrays.
+            asList(
+                    "image/jpeg", 
+                    "image/png", 
+                    "image/webp", 
+                    "image/svg+xml", 
+                    "image/gif");
 
 }
