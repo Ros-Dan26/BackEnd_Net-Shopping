@@ -53,6 +53,9 @@ public class GenderDTO {
 
    //  hashCode() & equals
 
+
+    //Relación con la tabla users
+
         @OneToMany(mappedBy = "gender") // campo en User que tiene la relación
         private List<User> users;
 

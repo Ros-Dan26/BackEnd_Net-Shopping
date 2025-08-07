@@ -359,7 +359,7 @@ public class User implements Cloneable{
     // ------------------------------
 
     @ManyToOne
-    @JoinColumn(name = "id_")
+    @JoinColumn(name = "id_cdcards")
 
     private List<cd_cardsDTO> cd_CardsDTOS;
 
