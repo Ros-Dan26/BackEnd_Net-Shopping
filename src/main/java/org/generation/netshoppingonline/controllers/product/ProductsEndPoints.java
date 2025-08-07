@@ -31,8 +31,10 @@ public interface ProductsEndPoints {
     
     String PARAM_PRODUCT = "/{product}";
     String PARAM_IMAGES = "/images/{id}";
-    String ADD_IMAGE_URL = "/add/image";
     String ADD_IMAGE_FILE = "/add/file";
+    String PARAM_SIZE = "/size/{id}";
+    
+    String ALL_SIZES = "/size/all";
     
     
     

@@ -32,7 +32,6 @@ public class ImageView {
     }
 
     public ImageView( int idProduct, String url) {
-        this.id = 0;
         this.idProduct = idProduct;
         this.url = url;
     }

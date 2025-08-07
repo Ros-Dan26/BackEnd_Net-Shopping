@@ -4,10 +4,20 @@
  */
 package org.generation.netshoppingonline.models.product;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+
 /**
  *
  * @author JesusFloresTemahuay
  */
-public class Size {
+@Entity
+@Table(name = "sizes")
+public class Size extends SizeAbs{
+    
+    
+    public Size() {
+        
+    }
     
 }

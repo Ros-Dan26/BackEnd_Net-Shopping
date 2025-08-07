@@ -26,7 +26,7 @@ public class ImageViewService {
         this.imageViewRepository = imageViewRepository;
     }
 
-    public List<ImageView> findImageByIdProducto(int id) {
+    public List<ImageView> findImageByIdProduct(int id) {
         return imageViewRepository.findImageByIdProduct(id);
     }
 

@@ -19,6 +19,7 @@ import org.generation.netshoppingonline.models.product.ImageView;
 import org.generation.netshoppingonline.models.product.ProductView;
 import org.generation.netshoppingonline.services.product.ImageViewService;
 import org.generation.netshoppingonline.services.product.ProductViewService;
+import org.generation.netshoppingonline.services.product.SizeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,13 +42,16 @@ public class ProductController implements ProductsEndPoints {
 
     private final ProductViewService productViewService;
     private final ImageViewService imageViewService;
+    private final SizeService sizeService;
 
     @Autowired
     public ProductController(
             ProductViewService productViewService,
-            ImageViewService imageViewService) {
+            ImageViewService imageViewService,
+            SizeService sizeService) {
         this.productViewService = productViewService;
         this.imageViewService = imageViewService;
+        this.sizeService =sizeService;
     }
 
     @GetMapping(ALL)
@@ -73,10 +77,10 @@ public class ProductController implements ProductsEndPoints {
     }
 
     @GetMapping(PARAM_IMAGES)
-    public ResponseEntity<?> findImageByIdProducto(@PathVariable int id) {
+    public ResponseEntity<?> findImageByIdProduct(@PathVariable int id) {
         List<ImageView> p = null;
         try {
-            p = imageViewService.findImageByIdProducto(id);
+            p = imageViewService.findImageByIdProduct(id);
             System.out.println("id:" + id);
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(p);
 
@@ -88,6 +92,32 @@ public class ProductController implements ProductsEndPoints {
             return ResponseEntity.notFound().build();
         }
     }
+    
+    @GetMapping(ALL_SIZES)
+    public ResponseEntity<?> getAllSizes() {
+            String p [] = sizeService.getAllSizes();
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(p);
+    }
+    
+    @GetMapping(PARAM_SIZE)
+    public ResponseEntity<?> findSizeByIdProduct(@PathVariable int id) {
+        List<ImageView> p = null;
+        try {
+            p = imageViewService.findImageByIdProduct(id);
+            System.out.println("id:" + id);
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(p);
+
+        } catch (ProductNotFoundException e) {
+            System.out.println(e);
+            return ResponseEntity.notFound().build();
+        } catch (NoSuchElementException e) {
+            System.out.println(e);
+            return ResponseEntity.notFound().build();
+        }
+    }
+    
+    
+    
 
     /**
      * Este metodo se encarga de recibir un archivo binario y un texto que
@@ -95,7 +125,7 @@ public class ProductController implements ProductsEndPoints {
      * espera que sea de imagen, el id debe de existir en el producto para que
      * sea agregado a la base de datos, adicional a ello proporciona desde el
      * backend el acceso al archivo desde el servidor por el puerto 80 para que
-     * funcione en cualquier parte del mundo.
+     * funcione desde internet.
      *
      * @param multipartFile
      * @param id
