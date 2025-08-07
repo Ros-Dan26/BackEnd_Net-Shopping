@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 import java.util.NoSuchElementException;
 import static org.generation.netshoppingonline.controllers.user.UserEndPoints.PARAM_ID;
@@ -134,19 +135,25 @@ public class ProductController implements ProductsEndPoints {
                 System.out.println("upload image to: " + pathString);
                 System.out.println("Public access: " + pathPublic);
 
-                imageViewService.addImageToProducto(pathPublic, id);
+                ProductView p = (ProductView) findById(id).getBody();
+                if (p != null) {
+                    imageViewService.addImageToProducto(pathPublic, id);
+                    File destinationFile = new File(pathString);
+                    multipartFile.transferTo(destinationFile);
 
-                File destinationFile = new File(pathString);
-                multipartFile.transferTo(destinationFile);
+                    uri = ServletUriComponentsBuilder.
+                            fromCurrentRequest().
+                            path(pathString)
+                            .buildAndExpand(multipartFile.toString())
+                            .toUri();
+                    return ResponseEntity.created(uri).
+                            body("Imagen agregada correctamente.");
+                }else{
+                    return ResponseEntity.notFound().build();
+                }
 
-                uri = ServletUriComponentsBuilder.
-                        fromCurrentRequest().
-                        path(pathString)
-                        .buildAndExpand(multipartFile.toString())
-                        .toUri();
-                return ResponseEntity.created(uri).
-                        body("Imagen agregada correctamente.");
             } catch (IOException e) {
+                System.out.println(e);
                 return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
                         .body("Archivo corrupto: " + multipartFile.getContentType());
             } catch (ImageNotAddException e) {
