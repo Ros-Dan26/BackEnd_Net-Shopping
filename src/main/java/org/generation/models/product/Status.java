@@ -12,12 +12,13 @@ import jakarta.persistence.Table;
  * @author JesusFloresTemahuay
  */
 @Entity
-@Table(name = "sizes")
-public class Size extends SizeAbs{
-    
-    
-    public Size() {
-        
+@Table(name = "status")
+public class Status extends Tupla{
+
+    public Status() {
     }
-    
+
+    public Status(int id, String name){
+        super(id, name);
+    }
 }

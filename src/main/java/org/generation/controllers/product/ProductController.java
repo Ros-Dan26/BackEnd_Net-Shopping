@@ -95,8 +95,8 @@ public class ProductController implements ProductsEndPoints {
     
     @GetMapping(ALL_SIZES)
     public ResponseEntity<?> getAllSizes() {
-            String p [] = sizeService.getAllSizes();
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body(p);
+            List<String> l = sizeService.getAllSizes();
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(l);
     }
     
     @GetMapping(PARAM_SIZE)

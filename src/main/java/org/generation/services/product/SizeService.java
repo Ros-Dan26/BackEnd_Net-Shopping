@@ -4,6 +4,9 @@
  */
 package org.generation.netshoppingonline.services.product;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import org.generation.netshoppingonline.models.product.Size;
 import org.generation.netshoppingonline.repositories.product.SizeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +27,14 @@ public class SizeService {
         this.sizeRepository = sizeRepository;
     }
 
-    public String[] getAllSizes(){
-        return Size.SIZES;
+    public List<String> getAllSizes(){
+        ArrayList<Size> t = (ArrayList<Size>) sizeRepository.findAll();
+        ArrayList<String> ts = new ArrayList<>();
+        
+        Iterator<Size> i = t.iterator();
+        while(i.hasNext()){
+            ts.add(i.next().getName());
+        }
+        return ts;
     }
 }
