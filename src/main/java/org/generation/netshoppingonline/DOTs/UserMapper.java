@@ -1,6 +1,5 @@
-package org.generation.netshoppingonline.controllers.UserControllerDTO;
+package org.generation.netshoppingonline.DOTs;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 public class UserMapper {

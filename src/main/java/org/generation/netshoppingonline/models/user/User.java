@@ -10,9 +10,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
-import org.generation.netshoppingonline.models.dto.AddressDTO;
-import org.generation.netshoppingonline.models.dto.GenderDTO;
-import org.generation.netshoppingonline.models.dto.cd_cardsDTO;
+import org.generation.netshoppingonline.DOTs.AddressDTO;
+import org.generation.netshoppingonline.DOTs.GenderDTO;
+import org.generation.netshoppingonline.DOTs.cd_cardsDTO;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 
 /**

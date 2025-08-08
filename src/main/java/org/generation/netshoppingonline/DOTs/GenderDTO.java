@@ -1,10 +1,9 @@
-package org.generation.netshoppingonline.models.dto;
+package org.generation.netshoppingonline.DOTs;
 
 import jakarta.persistence.*;
 import org.generation.netshoppingonline.models.user.User;
 
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 @Table (name = "genders")

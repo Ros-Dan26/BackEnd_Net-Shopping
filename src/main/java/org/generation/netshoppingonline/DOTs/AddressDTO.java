@@ -1,5 +1,5 @@
 
-package org.generation.netshoppingonline.models.dto;
+package org.generation.netshoppingonline.DOTs;
 
 import jakarta.persistence.*;
 import jakarta.persistence.Table;

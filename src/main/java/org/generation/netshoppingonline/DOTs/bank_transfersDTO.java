@@ -1,4 +1,4 @@
-package org.generation.netshoppingonline.models.dto;
+package org.generation.netshoppingonline.DOTs;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
