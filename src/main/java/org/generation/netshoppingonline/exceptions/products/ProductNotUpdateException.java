@@ -1,0 +1,21 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package org.generation.netshoppingonline.exceptions.products;
+
+/**
+ *
+ * @author JesusFloresTemahuay
+ */
+public class ProductNotUpdateException extends RuntimeException{
+
+    public ProductNotUpdateException() {
+        super("El producto no ha sido salvado.");
+    }
+
+    public ProductNotUpdateException(String message) {
+        super(message);
+    }
+    
+}

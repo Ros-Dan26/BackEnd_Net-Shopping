@@ -13,11 +13,15 @@ import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 import java.util.NoSuchElementException;
 import static org.generation.netshoppingonline.controllers.user.UserEndPoints.PARAM_ID;
+import static org.generation.netshoppingonline.controllers.user.UserEndPoints.PARAM_USER;
 import org.generation.netshoppingonline.exceptions.products.ImageNotAddException;
 import org.generation.netshoppingonline.exceptions.products.ProductNotFoundException;
+import org.generation.netshoppingonline.exceptions.products.ProductNotSaveException;
 import org.generation.netshoppingonline.models.product.ImageView;
+import org.generation.netshoppingonline.models.product.Product;
 import org.generation.netshoppingonline.models.product.ProductView;
 import org.generation.netshoppingonline.services.product.ImageViewService;
+import org.generation.netshoppingonline.services.product.ProductService;
 import org.generation.netshoppingonline.services.product.ProductViewService;
 import org.generation.netshoppingonline.services.product.SizeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +30,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -43,15 +48,18 @@ public class ProductController implements ProductsEndPoints {
     private final ProductViewService productViewService;
     private final ImageViewService imageViewService;
     private final SizeService sizeService;
+    private final ProductService productService;
 
     @Autowired
     public ProductController(
             ProductViewService productViewService,
             ImageViewService imageViewService,
-            SizeService sizeService) {
+            SizeService sizeService,
+            ProductService productService) {
         this.productViewService = productViewService;
         this.imageViewService = imageViewService;
-        this.sizeService =sizeService;
+        this.sizeService = sizeService;
+        this.productService = productService;
     }
 
     @GetMapping(ALL)
@@ -92,13 +100,13 @@ public class ProductController implements ProductsEndPoints {
             return ResponseEntity.notFound().build();
         }
     }
-    
+
     @GetMapping(ALL_SIZES)
     public ResponseEntity<?> getAllSizes() {
-            List<String> l = sizeService.getAllSizes();
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body(l);
+        List<String> p = sizeService.getAllSizes();
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(p);
     }
-    
+
     @GetMapping(PARAM_SIZE)
     public ResponseEntity<?> findSizeByIdProduct(@PathVariable int id) {
         List<ImageView> p = null;
@@ -115,9 +123,6 @@ public class ProductController implements ProductsEndPoints {
             return ResponseEntity.notFound().build();
         }
     }
-    
-    
-    
 
     /**
      * Este metodo se encarga de recibir un archivo binario y un texto que
@@ -178,7 +183,7 @@ public class ProductController implements ProductsEndPoints {
                             .toUri();
                     return ResponseEntity.created(uri).
                             body("Imagen agregada correctamente.");
-                }else{
+                } else {
                     return ResponseEntity.notFound().build();
                 }
 
@@ -195,4 +200,48 @@ public class ProductController implements ProductsEndPoints {
                     .body("Tipo de archivo no permitido: " + multipartFile.getContentType());
         }
     }
-}
+
+    @PostMapping(SAVE)
+    public ResponseEntity<?> save(@RequestBody Product product) {
+        Product p = null;
+        URI uri = null;
+        try {
+            System.out.println("Saved: " + product.toString());
+            p = productService.save(product);
+            uri = ServletUriComponentsBuilder.
+                    fromCurrentRequest().
+                    path(SAVE + PARAM_USER)
+                    .buildAndExpand(p.toString())
+                    .toUri();
+            return ResponseEntity.created(uri).body(p);
+        } catch (ProductNotSaveException e) {
+            System.out.println(e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        } catch (SQLIntegrityConstraintViolationException e) {
+            System.out.println(e);
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+    }
+    
+    @PostMapping(UPDATE)
+    public ResponseEntity<?> update(@RequestBody Product product) {
+        Product p = null;
+        URI uri = null;
+        try {
+            System.out.println("Updated: " + product.toString());
+            p = productService.update(product);
+            uri = ServletUriComponentsBuilder.
+                    fromCurrentRequest().
+                    path(SAVE + PARAM_USER)
+                    .buildAndExpand(p.toString())
+                    .toUri();
+            return ResponseEntity.created(uri).body(p);
+        } catch (ProductNotSaveException e) {
+            System.out.println(e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        } catch (SQLIntegrityConstraintViolationException e) {
+            System.out.println(e);
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+    }
+}   

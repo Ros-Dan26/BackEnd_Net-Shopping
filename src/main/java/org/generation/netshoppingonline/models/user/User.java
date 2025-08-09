@@ -4,15 +4,15 @@
  */
 package org.generation.netshoppingonline.models.user;
 
-import jakarta.persistence.*;
-
+import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
-
-import org.generation.netshoppingonline.DOTs.AddressDTO;
-import org.generation.netshoppingonline.DOTs.GenderDTO;
-import org.generation.netshoppingonline.DOTs.cd_cardsDTO;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 
 /**
@@ -28,7 +28,7 @@ public class User implements Cloneable{
     @Column(name = "id")
     private int id;
 
-    @Column(name = "genders_id")
+    @Column(name = "id_gender")
     private int gendersId;
 
     @Column(name = "first_name")
@@ -317,61 +317,4 @@ public class User implements Cloneable{
                 getLastName(), 
                 getMiddleName());
     }
-
-    // ------------------------------
-    // relacion de User con AddressDTO 1:N
-    // ------------------------------
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy ="user")
-    private List<AddressDTO> addressDTOS;
-
-    //getters &  setters
-    public List<AddressDTO> getAddressDTOS() {
-        return addressDTOS;
-    }
-
-    public void setOrders(List<AddressDTO> addressDTOS) {
-        this.addressDTOS = addressDTOS;
-    }
-
-    // ------------------------------
-    // relacion de User con GenderDTO N:1
-    // ------------------------------
-
-
-        @ManyToOne
-        @JoinColumn(name = "id_gender") // clave foránea en la tabla User
-        private GenderDTO gender;
-
-        // Getters & setters
-        public GenderDTO getGender() {
-            return gender;
-        }
-
-        public void setGender(GenderDTO gender) {
-            this.gender =gender;
-        }
-
-
-
-    // ------------------------------
-    // relacion de user con cd_cardsDTO  N:1
-    // ------------------------------
-
-    @ManyToOne
-    @JoinColumn(name = "id_cdcards")
-
-    private List<cd_cardsDTO> cd_CardsDTOS;
-
-    //getters &  setters
-    public List<cd_cardsDTO> getCdCardsDTOS() {
-        return getCdCardsDTOS();
-    }
-
-    public void setCdCardsDTOS(List<cd_cardsDTO> genderDTOS) {
-        this. cd_CardsDTOS= cd_CardsDTOS;
-    }
-
-
-
 }

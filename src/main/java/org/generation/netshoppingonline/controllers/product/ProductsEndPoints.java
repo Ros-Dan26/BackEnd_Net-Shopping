@@ -12,14 +12,14 @@ import java.util.List;
  * @author jft
  */
 public interface ProductsEndPoints {
-    
+
     String ROOT = "/api/v1/nso";
     String DIRECTORY = "/nso/bin";
     String URL_SERVER = "http://jft314.ddns.net";
-    String LOCAL_PATH ="/var/www/html/jftlab%s/%d";
-    
+    String LOCAL_PATH = "/var/www/html/jftlab%s/%d";
+
     String PRODUCT_VIEW = "/product";
-    
+
     String ALL = "/all";
     String FIND = "/find";
     String SAVE = "/save";
@@ -27,24 +27,21 @@ public interface ProductsEndPoints {
     String HARD_DELETE = "/hdelete";
     String SOFT_DELETE = "/sdelete";
     String LOGIN = "/login";
-    
-    
+
     String PARAM_PRODUCT = "/{product}";
     String PARAM_IMAGES = "/images/{id}";
-    String ADD_IMAGE_FILE = "/add/file";
+    String ADD_IMAGE_FILE = "/add/image";
     String PARAM_SIZE = "/size/{id}";
-    
+
     String ALL_SIZES = "/size/all";
-    
-    
-    
+
     //Constantes
     List<String> ALLOWED_MIME = Arrays.
             asList(
-                    "image/jpeg", 
-                    "image/png", 
-                    "image/webp", 
-                    "image/svg+xml", 
+                    "image/jpeg",
+                    "image/png",
+                    "image/webp",
+                    "image/svg+xml",
                     "image/gif");
 
 }

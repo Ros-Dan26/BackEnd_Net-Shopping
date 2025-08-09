@@ -27,14 +27,13 @@ public class SizeService {
         this.sizeRepository = sizeRepository;
     }
 
-    public List<String> getAllSizes(){
-        ArrayList<Size> t = (ArrayList<Size>) sizeRepository.findAll();
-        ArrayList<String> ts = new ArrayList<>();
-        
-        Iterator<Size> i = t.iterator();
-        while(i.hasNext()){
-            ts.add(i.next().getName());
+    public List<String> getAllSizes() {
+        List<Size> l = sizeRepository.findAll();
+        List<String> s = new ArrayList<>();
+        Iterator<Size> i = l.iterator();
+        while (i.hasNext()) {
+            s.add(i.next().getName());
         }
-        return ts;
+        return s;
     }
 }
