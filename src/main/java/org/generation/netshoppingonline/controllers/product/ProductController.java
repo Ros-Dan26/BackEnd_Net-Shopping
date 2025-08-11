@@ -17,13 +17,20 @@ import static org.generation.netshoppingonline.controllers.user.UserEndPoints.PA
 import org.generation.netshoppingonline.exceptions.products.ImageNotAddException;
 import org.generation.netshoppingonline.exceptions.products.ProductNotFoundException;
 import org.generation.netshoppingonline.exceptions.products.ProductNotSaveException;
+import org.generation.netshoppingonline.models.product.Brand;
+import org.generation.netshoppingonline.models.product.ColorProduct;
 import org.generation.netshoppingonline.models.product.ImageView;
 import org.generation.netshoppingonline.models.product.Product;
 import org.generation.netshoppingonline.models.product.ProductView;
+import org.generation.netshoppingonline.models.product.Size;
+import org.generation.netshoppingonline.models.product.Status;
+import org.generation.netshoppingonline.services.product.BrandService;
+import org.generation.netshoppingonline.services.product.ColorProductService;
 import org.generation.netshoppingonline.services.product.ImageViewService;
 import org.generation.netshoppingonline.services.product.ProductService;
 import org.generation.netshoppingonline.services.product.ProductViewService;
 import org.generation.netshoppingonline.services.product.SizeService;
+import org.generation.netshoppingonline.services.product.StatusService;
 import org.generation.netshoppingonline.services.user.AvatarService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -50,6 +57,9 @@ public class ProductController implements ProductsEndPoints {
     private final ImageViewService imageViewService;
     private final SizeService sizeService;
     private final ProductService productService;
+    private final StatusService statusService;
+    private final BrandService brandService;
+    private final ColorProductService colorProductService;
 
     @Autowired
     public ProductController(
@@ -57,11 +67,17 @@ public class ProductController implements ProductsEndPoints {
             ImageViewService imageViewService,
             SizeService sizeService,
             ProductService productService,
-            AvatarService avatarService) {
+            AvatarService avatarService,
+            StatusService statusService,
+            BrandService brandService,
+            ColorProductService colorProductService) {
         this.productViewService = productViewService;
         this.imageViewService = imageViewService;
         this.sizeService = sizeService;
         this.productService = productService;
+        this.statusService =statusService;
+        this.brandService =brandService;
+        this.colorProductService =colorProductService;
     }
 
     @GetMapping(ALL)
@@ -105,7 +121,25 @@ public class ProductController implements ProductsEndPoints {
 
     @GetMapping(ALL_SIZES)
     public ResponseEntity<?> getAllSizes() {
-        List<String> p = sizeService.getAllSizes();
+        List<Size> p = sizeService.findAll();
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(p);
+    }
+    
+    @GetMapping(ALL_STATUS)
+    public ResponseEntity<?> getAllStatus() {
+        List<Status> p = statusService.findAll();
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(p);
+    }
+    
+    @GetMapping(ALL_BRANDS)
+    public ResponseEntity<?> getAllBrands() {
+        List<Brand> p = brandService.findAll();
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(p);
+    }
+    
+    @GetMapping(ALL_COLORS)
+    public ResponseEntity<?> getAllColors() {
+        List<ColorProduct> p = colorProductService.findAll();
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(p);
     }
 

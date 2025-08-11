@@ -4,11 +4,9 @@
  */
 package org.generation.netshoppingonline.services.product;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import org.generation.netshoppingonline.models.product.Size;
-import org.generation.netshoppingonline.repositories.product.SizeRepository;
+import org.generation.netshoppingonline.models.product.Status;
+import org.generation.netshoppingonline.repositories.product.StatusRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,17 +15,15 @@ import org.springframework.stereotype.Service;
  * @author JesusFloresTemahuay
  */
 @Service
-public class SizeService {
-
-    private final SizeRepository sizeRepository;
+public class StatusService {
+    private final StatusRepository statusRepository;
 
     @Autowired
-
-    public SizeService(SizeRepository sizeRepository) {
-        this.sizeRepository = sizeRepository;
+    public StatusService(StatusRepository statusRepository) {
+        this.statusRepository = statusRepository;
     }
     
-    public List<Size> findAll(){
-        return sizeRepository.findAll();
+    public List<Status> findAll(){
+        return statusRepository.findAll();
     }
 }

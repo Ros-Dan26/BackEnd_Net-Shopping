@@ -33,7 +33,10 @@ public interface ProductsEndPoints {
     String ADD_IMAGE_FILE = "/add/image";
     String PARAM_SIZE = "/size/{id}";
 
-    String ALL_SIZES = "/size/all";
+    String ALL_SIZES = "lookup/sizes";
+    String ALL_STATUS = "lookup/status";
+    String ALL_BRANDS= "lookup/brands";
+    String ALL_COLORS= "lookup/colors_products";
 
     //Constantes
     List<String> ALLOWED_MIME = Arrays.
