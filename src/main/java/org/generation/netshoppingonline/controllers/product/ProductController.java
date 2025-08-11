@@ -12,11 +12,14 @@ import java.nio.file.Path;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 import java.util.NoSuchElementException;
+import static org.generation.netshoppingonline.controllers.user.UserEndPoints.HARD_DELETE;
 import static org.generation.netshoppingonline.controllers.user.UserEndPoints.PARAM_ID;
 import static org.generation.netshoppingonline.controllers.user.UserEndPoints.PARAM_USER;
 import org.generation.netshoppingonline.exceptions.products.ImageNotAddException;
+import org.generation.netshoppingonline.exceptions.products.ProductNotDeletedException;
 import org.generation.netshoppingonline.exceptions.products.ProductNotFoundException;
 import org.generation.netshoppingonline.exceptions.products.ProductNotSaveException;
+import org.generation.netshoppingonline.exceptions.user.UserNotDeleteException;
 import org.generation.netshoppingonline.models.product.Brand;
 import org.generation.netshoppingonline.models.product.ColorProduct;
 import org.generation.netshoppingonline.models.product.ImageView;
@@ -35,9 +38,11 @@ import org.generation.netshoppingonline.services.user.AvatarService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -278,6 +283,36 @@ public class ProductController implements ProductsEndPoints {
         } catch (SQLIntegrityConstraintViolationException e) {
             System.out.println(e);
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+    }
+    
+    @DeleteMapping(HARD_DELETE + PARAM_ID)
+    public ResponseEntity<?> hardDelete(@PathVariable int id) {
+        try {
+            productService.hardDelete(id);
+            return ResponseEntity.ok().build();
+        } catch (ProductNotDeletedException e) {
+            System.out.println(e);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+
+        } catch (NoSuchElementException e) {
+            System.out.println(e);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+    
+    @PutMapping(SOFT_DELETE + PARAM_ID)
+    public ResponseEntity<?> softDelete(@PathVariable int id) {
+        try {
+            productService.softDelete(id);
+            return ResponseEntity.ok().build();
+        } catch (ProductNotDeletedException e) {
+            System.out.println(e);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+
+        } catch (NoSuchElementException e) {
+            System.out.println(e);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 }   

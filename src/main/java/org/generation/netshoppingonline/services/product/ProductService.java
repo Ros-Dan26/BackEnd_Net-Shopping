@@ -5,8 +5,12 @@
 package org.generation.netshoppingonline.services.product;
 
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.NoSuchElementException;
+import org.generation.netshoppingonline.exceptions.products.ProductNotDeletedException;
 import org.generation.netshoppingonline.exceptions.products.ProductNotSaveException;
+import org.generation.netshoppingonline.exceptions.user.UserNotDeleteException;
 import org.generation.netshoppingonline.models.product.Product;
+import org.generation.netshoppingonline.models.user.User;
 import org.generation.netshoppingonline.repositories.product.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -38,7 +42,7 @@ public class ProductService {
             throw new ProductNotSaveException();
         }
     }
-    
+
     public Product update(Product product) throws
             ProductNotSaveException,
             SQLIntegrityConstraintViolationException {
@@ -52,4 +56,35 @@ public class ProductService {
         }
     }
 
-}
+    public void softDelete(int id) throws
+            ProductNotDeletedException,
+            NoSuchElementException {
+
+        Product p = productRepository.findById(id).get();
+
+        if (p != null) {
+            if (p.getDeleted() == null) {
+                p.setDeleted();
+                productRepository.save(p);
+            } else {
+                throw new NoSuchElementException();
+            }
+        } else {
+            throw new UserNotDeleteException();
+        }
+    }
+
+    public void hardDelete(int id) throws
+        ProductNotDeletedException,
+            NoSuchElementException {
+
+            Product p = productRepository.findById(id).get();
+
+            if (p != null) {
+                productRepository.delete(p);
+            } else {
+                throw new ProductNotDeletedException();
+            }
+        }
+
+    }
