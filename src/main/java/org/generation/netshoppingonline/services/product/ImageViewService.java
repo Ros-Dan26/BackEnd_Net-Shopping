@@ -4,7 +4,6 @@
  */
 package org.generation.netshoppingonline.services.product;
 
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 import org.generation.netshoppingonline.exceptions.products.ImageNotAddException;
 import org.generation.netshoppingonline.models.product.ImageView;
@@ -30,7 +29,7 @@ public class ImageViewService {
         return imageViewRepository.findImageByIdProduct(id);
     }
 
-    public void addImageToProducto(String url, int id) throws
+    public void addImageToProduct(String url, int id) throws
             ImageNotAddException {
         
         ImageView i = new ImageView(id, url);

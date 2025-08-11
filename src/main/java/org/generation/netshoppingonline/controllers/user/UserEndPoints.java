@@ -29,5 +29,6 @@ public interface UserEndPoints {
     String PARAM_PHONE = "/phone/{phone}";
     String PARAM_MOVIL = "/movil/{movil}";
     String PARAM_NICKNAME = "/nickname/{nickname}";
+    String ADD_AVATAR_FILE = "/add/avatar";
     
 }

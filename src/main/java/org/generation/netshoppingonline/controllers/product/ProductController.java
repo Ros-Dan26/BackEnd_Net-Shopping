@@ -24,6 +24,7 @@ import org.generation.netshoppingonline.services.product.ImageViewService;
 import org.generation.netshoppingonline.services.product.ProductService;
 import org.generation.netshoppingonline.services.product.ProductViewService;
 import org.generation.netshoppingonline.services.product.SizeService;
+import org.generation.netshoppingonline.services.user.AvatarService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -55,7 +56,8 @@ public class ProductController implements ProductsEndPoints {
             ProductViewService productViewService,
             ImageViewService imageViewService,
             SizeService sizeService,
-            ProductService productService) {
+            ProductService productService,
+            AvatarService avatarService) {
         this.productViewService = productViewService;
         this.imageViewService = imageViewService;
         this.sizeService = sizeService;
@@ -172,7 +174,7 @@ public class ProductController implements ProductsEndPoints {
 
                 ProductView p = (ProductView) findById(id).getBody();
                 if (p != null) {
-                    imageViewService.addImageToProducto(pathPublic, id);
+                    imageViewService.addImageToProduct(pathPublic, id);
                     File destinationFile = new File(pathString);
                     multipartFile.transferTo(destinationFile);
 

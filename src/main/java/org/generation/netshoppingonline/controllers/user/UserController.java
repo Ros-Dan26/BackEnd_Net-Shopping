@@ -4,13 +4,25 @@
  */
 package org.generation.netshoppingonline.controllers.user;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.NoSuchElementException;
+import static org.generation.netshoppingonline.controllers.product.ProductsEndPoints.ALLOWED_MIME;
+import static org.generation.netshoppingonline.controllers.product.ProductsEndPoints.DIRECTORY;
+import static org.generation.netshoppingonline.controllers.product.ProductsEndPoints.LOCAL_PATH;
+import static org.generation.netshoppingonline.controllers.product.ProductsEndPoints.URL_SERVER;
+import org.generation.netshoppingonline.exceptions.products.ImageNotAddException;
 import org.generation.netshoppingonline.exceptions.user.UserNotCreatedException;
 import org.generation.netshoppingonline.exceptions.user.UserNotDeleteException;
 import org.generation.netshoppingonline.exceptions.user.UserNotFoundException;
 import org.generation.netshoppingonline.exceptions.user.UserNotLogInException;
+import org.generation.netshoppingonline.models.product.ProductView;
+import org.generation.netshoppingonline.models.user.Avatar;
 import org.generation.netshoppingonline.models.user.User;
+import org.generation.netshoppingonline.services.user.AvatarService;
 import org.generation.netshoppingonline.services.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,6 +36,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 /**
@@ -35,10 +48,13 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 public class UserController implements UserEndPoints {
 
     private final UserService userService;
+    private final AvatarService avatarService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService,
+            AvatarService avatarService) {
         this.userService = userService;
+        this.avatarService = avatarService;
     }
 
     @GetMapping(ALL)
@@ -217,7 +233,6 @@ public class UserController implements UserEndPoints {
         }
     }
 
-
     @PostMapping(LOGIN)
     public ResponseEntity<?> login(
             @RequestParam String email,
@@ -229,7 +244,7 @@ public class UserController implements UserEndPoints {
         } catch (UserNotLogInException e) {
             System.out.println(e);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        } 
+        }
     }
 
     private boolean isExistUniqueParams(User user) {
@@ -253,5 +268,99 @@ public class UserController implements UserEndPoints {
                 || movilExist
                 || phoneExist
                 || nicknameExist;
+    }
+
+    /**
+     * Este metodo se encarga de asignar un archivo de imagen a un usuario
+     * especificado por su id, en caso de que el usuario no cuente previamente
+     * con una imagen de avatar se le asigna uno nuevo y si ya tenia uno, se
+     * actualiza su anterior avatar por uno nuevo.
+     *
+     * @param multipartFile
+     * @param idUser
+     * @return
+     */
+    @PostMapping(ADD_AVATAR_FILE)
+    public ResponseEntity<?> addAvatar(
+            @RequestParam("file") MultipartFile multipartFile,
+            @RequestParam("id") int idUser) {
+        URI uri = null;
+
+        if (ALLOWED_MIME.contains(multipartFile.getContentType())) {
+
+            if (multipartFile.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).
+                        body("Imagen daniada");
+            }
+            try {
+                String pathString = String.format(
+                        LOCAL_PATH,
+                        DIRECTORY,
+                        idUser);
+                Path path = Path.of(pathString);
+                if (!Files.exists(path)) {
+                    Files.createDirectories(path);
+                }
+                String pathPublic = URL_SERVER.
+                        concat(DIRECTORY).
+                        concat(File.separator).
+                        concat(String.valueOf(idUser)).
+                        concat(File.separator).
+                        concat(multipartFile.getOriginalFilename());
+                pathString = pathString.
+                        concat(File.separator).
+                        concat(multipartFile.getOriginalFilename());
+
+                System.out.println("upload image to: " + pathString);
+                System.out.println("Public access: " + pathPublic);
+
+                User u = (User) findById(idUser).getBody();
+                if (u != null) {
+
+                    Avatar a = avatarService.findByUserId(idUser);
+
+                    if (a == null) {
+
+                        avatarService.addAvatar(pathPublic, idUser);
+                        File destinationFile = new File(pathString);
+                        multipartFile.transferTo(destinationFile);
+
+                        uri = ServletUriComponentsBuilder.
+                                fromCurrentRequest().
+                                path(pathString)
+                                .buildAndExpand(multipartFile.toString())
+                                .toUri();
+                        return ResponseEntity.created(uri).
+                                body("Avatar agregada correctamente.");
+                    } else {
+                        a.setUrl(pathPublic);
+                        avatarService.save(a);
+                        File destinationFile = new File(pathString);
+                        multipartFile.transferTo(destinationFile);
+
+                        uri = ServletUriComponentsBuilder.
+                                fromCurrentRequest().
+                                path(pathString)
+                                .buildAndExpand(multipartFile.toString())
+                                .toUri();
+                        return ResponseEntity.created(uri).
+                                body("Avatar agregada correctamente.");
+                    }
+                } else {
+                    return ResponseEntity.notFound().build();
+                }
+
+            } catch (IOException e) {
+                System.out.println(e);
+                return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
+                        .body("Archivo corrupto: " + multipartFile.getContentType());
+            } catch (ImageNotAddException e) {
+                System.out.println(e);
+                return ResponseEntity.notFound().build();
+            }
+        } else {
+            return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+                    .body("Tipo de archivo no permitido: " + multipartFile.getContentType());
+        }
     }
 }
