@@ -11,7 +11,9 @@ import org.generation.netshoppingonline.exceptions.user.UserNotDeleteException;
 import org.generation.netshoppingonline.exceptions.user.UserNotFoundException;
 import org.generation.netshoppingonline.exceptions.user.UserNotLogInException;
 import org.generation.netshoppingonline.models.user.User;
+import org.generation.netshoppingonline.models.user.UserView;
 import org.generation.netshoppingonline.repositories.user.UserRepository;
+import org.generation.netshoppingonline.repositories.user.UserViewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,21 +25,23 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final UserViewRepository userViewRepository;
 
     @Autowired
-    public UserService(UserRepository userRepository
-            ) {
+    public UserService(UserRepository userRepository,
+            UserViewRepository userViewRepository) {
         this.userRepository = userRepository;
+        this.userViewRepository = userViewRepository;
     }
 
-    public List<User> findAll() {
-        return userRepository.findAll();
+    public List<UserView> findAll() {
+        return userViewRepository.findAll();
     }
 
-    public User findById(int id) throws
+    public UserView findById(int id) throws
             UserNotFoundException,
             NoSuchElementException {
-        User u = userRepository.findById(id).get();
+        UserView u = userViewRepository.findById(id).get();
         if (u != null) {
             return u;
         } else {
@@ -45,8 +49,8 @@ public class UserService {
         }
     }
 
-    public User findByEmail(String email) throws UserNotFoundException {
-        User u = userRepository.findByEmail(email);
+    public UserView findByEmail(String email) throws UserNotFoundException {
+        UserView u = userViewRepository.findByEmail(email);
         if (u != null) {
             return u;
         } else {
@@ -54,8 +58,8 @@ public class UserService {
         }
     }
 
-    public User findByPhone(String phone) throws UserNotFoundException {
-        User u = userRepository.findByPhone(phone);
+    public UserView findByPhone(String phone) throws UserNotFoundException {
+        UserView u = userViewRepository.findByPhone(phone);
 
         if (u == null) {
             throw new UserNotFoundException();
@@ -63,8 +67,8 @@ public class UserService {
         return u;
     }
 
-    public User findByNickname(String nickname) throws UserNotFoundException {
-        User u = userRepository.findByNickname(nickname);
+    public UserView findByNickname(String nickname) throws UserNotFoundException {
+        UserView u = userViewRepository.findByNickname(nickname);
 
         if (u == null) {
             throw new UserNotFoundException();
@@ -72,8 +76,8 @@ public class UserService {
         return u;
     }
 
-    public User findByMovil(String movil) throws UserNotFoundException {
-        User u = userRepository.findByMobile(movil);
+    public UserView findByMovil(String movil) throws UserNotFoundException {
+        UserView u = userViewRepository.findByMobile(movil);
         if (u != null) {
             return u;
         } else {
@@ -106,10 +110,25 @@ public class UserService {
             UserNotDeleteException,
             NoSuchElementException {
 
-        User userExist = findById(id);
+        UserView userExist = findById(id);
 
         if (userExist != null) {
-            userRepository.delete(userExist);
+            User u = new User(
+                    userExist.getId(),
+                    userExist.getGendersId(),
+                    userExist.getFirstName(),
+                    userExist.getLastName(),
+                    userExist.getMiddleName(),
+                    userExist.getPreferences(),
+                    userExist.getEmail(),
+                    userExist.getPhone(),
+                    userExist.getMobile(),
+                    userExist.getNickname(),
+                    userExist.getPassword());
+            u.setCreated(userExist.getCreated());
+            u.setUpdated(userExist.getUpdated());
+            u.setDeleted(userExist.getDeleted());
+            userRepository.delete(u);
         } else {
             throw new UserNotDeleteException();
         }
@@ -119,12 +138,26 @@ public class UserService {
             UserNotDeleteException,
             NoSuchElementException {
 
-        User userExist = findById(id);
+        UserView userExist = findById(id);
 
         if (userExist != null) {
             if (userExist.getDeleted() == null) {
-                userExist.setDeleted();
-                userRepository.save(userExist);
+                User u = new User(
+                        userExist.getId(),
+                        userExist.getGendersId(),
+                        userExist.getFirstName(),
+                        userExist.getLastName(),
+                        userExist.getMiddleName(),
+                        userExist.getPreferences(),
+                        userExist.getEmail(),
+                        userExist.getPhone(),
+                        userExist.getMobile(),
+                        userExist.getNickname(),
+                        userExist.getPassword());
+                u.setCreated(userExist.getCreated());
+                u.setUpdated(userExist.getUpdated());
+                u.setDeleted();
+                userRepository.save(u);
             } else {
                 throw new NoSuchElementException();
             }

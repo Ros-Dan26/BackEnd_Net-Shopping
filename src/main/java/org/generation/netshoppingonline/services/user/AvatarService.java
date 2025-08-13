@@ -5,7 +5,6 @@
 package org.generation.netshoppingonline.services.user;
 
 import org.generation.netshoppingonline.exceptions.products.ImageNotAddException;
-import org.generation.netshoppingonline.models.product.ImageView;
 import org.generation.netshoppingonline.models.user.Avatar;
 import org.generation.netshoppingonline.repositories.user.AvatarRepository;
 import org.springframework.beans.factory.annotation.Autowired;

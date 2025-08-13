@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 import static org.generation.netshoppingonline.controllers.product.ProductsEndPoints.ALLOWED_MIME;
 import static org.generation.netshoppingonline.controllers.product.ProductsEndPoints.DIRECTORY;
@@ -19,14 +21,15 @@ import org.generation.netshoppingonline.exceptions.user.UserNotCreatedException;
 import org.generation.netshoppingonline.exceptions.user.UserNotDeleteException;
 import org.generation.netshoppingonline.exceptions.user.UserNotFoundException;
 import org.generation.netshoppingonline.exceptions.user.UserNotLogInException;
-import org.generation.netshoppingonline.models.product.ProductView;
 import org.generation.netshoppingonline.models.user.Avatar;
 import org.generation.netshoppingonline.models.user.User;
+import org.generation.netshoppingonline.models.user.UserView;
 import org.generation.netshoppingonline.services.user.AvatarService;
 import org.generation.netshoppingonline.services.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,6 +47,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
  * @author jft
  */
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping(UserEndPoints.ROOT + UserEndPoints.USER)
 public class UserController implements UserEndPoints {
 
@@ -64,7 +68,7 @@ public class UserController implements UserEndPoints {
 
     @GetMapping(FIND + PARAM_ID)
     public ResponseEntity<?> findById(@PathVariable int id) {
-        User u = null;
+        UserView u = null;
         try {
             u = userService.findById(id);
             System.out.println("id:" + id);
@@ -81,7 +85,7 @@ public class UserController implements UserEndPoints {
 
     @GetMapping(FIND + PARAM_EMAIL)
     public ResponseEntity<?> findByEmail(@PathVariable String email) {
-        User u = null;
+        UserView u = null;
         try {
             u = userService.findByEmail(email);
             System.out.println("email:" + email);
@@ -96,7 +100,7 @@ public class UserController implements UserEndPoints {
 
     @GetMapping(FIND + PARAM_PHONE)
     public ResponseEntity<?> findByPhone(@PathVariable String phone) {
-        User u = null;
+        UserView u = null;
         try {
             u = userService.findByPhone(phone);
             System.out.println("phone:" + phone);
@@ -111,7 +115,7 @@ public class UserController implements UserEndPoints {
 
     @GetMapping(FIND + PARAM_MOVIL)
     public ResponseEntity<?> findByMovil(@PathVariable String movil) {
-        User u = null;
+        UserView u = null;
         try {
             u = userService.findByMovil(movil);
             System.out.println("movil:" + movil);
@@ -125,7 +129,7 @@ public class UserController implements UserEndPoints {
 
     @GetMapping(FIND + PARAM_NICKNAME)
     public ResponseEntity<?> findByNickname(@PathVariable String nickname) {
-        User u = null;
+        UserView u = null;
         try {
             u = userService.findByNickname(nickname);
             System.out.println("nickname:" + nickname);
@@ -175,21 +179,20 @@ public class UserController implements UserEndPoints {
         URI uri = null;
 
         try {
-            User last = (User) findById(user.getId()).getBody();
-            last.setFirstName(user.getFirstName());
-            last.setGendersId(user.getGendersId());
-            last.setLastName(user.getLastName());
-            last.setMiddleName(last.getMiddleName());
-            last.setPassword(user.getPassword());
-            last.setPreferences(user.getPreferences());
-            u = userService.save(last);
+            UserView last = (UserView) findById(user.getId()).getBody();
 
-            uri = ServletUriComponentsBuilder.
-                    fromCurrentRequest().
-                    path(SAVE + PARAM_USER)
-                    .buildAndExpand(user.toString())
-                    .toUri();
-            return ResponseEntity.created(uri).body(u);
+            if (last != null) {
+                u = userService.save(user);
+
+                uri = ServletUriComponentsBuilder.
+                        fromCurrentRequest().
+                        path(SAVE + PARAM_USER)
+                        .buildAndExpand(user.toString())
+                        .toUri();
+                return ResponseEntity.created(uri).body(u);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
 
         } catch (UserNotCreatedException e) {
             System.out.println(e);
@@ -314,7 +317,7 @@ public class UserController implements UserEndPoints {
                 System.out.println("upload image to: " + pathString);
                 System.out.println("Public access: " + pathPublic);
 
-                User u = (User) findById(idUser).getBody();
+                UserView u = (UserView) findById(idUser).getBody();
                 if (u != null) {
 
                     Avatar a = avatarService.findByUserId(idUser);
@@ -363,4 +366,15 @@ public class UserController implements UserEndPoints {
                     .body("Tipo de archivo no permitido: " + multipartFile.getContentType());
         }
     }
+
+//    public ResponseEntity<?> saveWithImg(
+//            @RequestBody User user,
+//            @RequestParam("file") MultipartFile multipartFile) {
+//
+//        List<ResponseEntity<?>> resp = new ArrayList<>();
+//        User us = (User) (save(user).getBody());
+//        resp.add((Res)());
+//        resp.add(addAvatar(multipartFile, user.));
+//        return ResponseEntity.ok(resp);
+//    }
 }

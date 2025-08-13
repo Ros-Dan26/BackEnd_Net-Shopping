@@ -32,6 +32,8 @@ public class ProductView {
     private String size;
     @Column
     private String brand;
+    @Column(name = "url_brand")
+    private String urlBrand;
     @Column(name = "color_product")
     private String colorProduct;
     @Column
@@ -55,8 +57,9 @@ public class ProductView {
     @Column
     @Convert(converter = Jsr310JpaConverters.LocalDateTimeConverter.class)
     private LocalDateTime deleted;
-
+    
     public ProductView() {
+        
     }
 
     public ProductView(
@@ -65,6 +68,7 @@ public class ProductView {
             String status,
             String size,
             String brand,
+            String urlBrand,
             String genderProduct,
             String colorProduct,
             String code,
@@ -81,6 +85,7 @@ public class ProductView {
         this.status = status;
         this.size = size;
         this.brand = brand;
+        this.urlBrand = urlBrand;
         this.colorProduct = colorProduct;
         this.code = code;
         this.name = name;
@@ -153,43 +158,53 @@ public class ProductView {
         return deleted;
     }
 
+    public String getUrlBrand() {
+        return urlBrand;
+    }
+
+    public void setUrlBrand(String urlBrand) {
+        this.urlBrand = urlBrand;
+    }
+    
     @Override
     public String toString() {
-        return "ProductView{" + "id=" + id
-                + ", user=" + user
-                + ", status=" + status 
-                + ", size=" + size
-                + ", brand=" + brand
-                + ", colorProduct=" + colorProduct
-                + ", code=" + code
-                + ", name=" + name
-                + ", model=" + model
-                + ", description=" + description
-                + ", details=" + details
-                + ", price=" + price
-                + ", created=" + created
-                + ", updated=" + updated
-                + ", deleted=" + deleted + '}';
+        return "ProductView{" + "id=" + id + 
+                ", user=" + user +
+                ", status=" + status +
+                ", size=" + size +
+                ", brand=" + brand +
+                ", urlBrand=" + urlBrand +
+                ", colorProduct=" + colorProduct + 
+                ", code=" + code +
+                ", name=" + name +
+                ", model=" + model + 
+                ", description=" + description + 
+                ", details=" + details + 
+                ", price=" + price + 
+                ", created=" + created +
+                ", updated=" + updated + 
+                ", deleted=" + deleted + '}';
     }
 
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 37 * hash + this.id;
-        hash = 37 * hash + Objects.hashCode(this.user);
-        hash = 37 * hash + Objects.hashCode(this.status);
-        hash = 37 * hash + Objects.hashCode(this.size);
-        hash = 37 * hash + Objects.hashCode(this.brand);
-        hash = 37 * hash + Objects.hashCode(this.colorProduct);
-        hash = 37 * hash + Objects.hashCode(this.code);
-        hash = 37 * hash + Objects.hashCode(this.name);
-        hash = 37 * hash + Objects.hashCode(this.model);
-        hash = 37 * hash + Objects.hashCode(this.description);
-        hash = 37 * hash + Objects.hashCode(this.details);
-        hash = 37 * hash + (int) (Double.doubleToLongBits(this.price) ^ (Double.doubleToLongBits(this.price) >>> 32));
-        hash = 37 * hash + Objects.hashCode(this.created);
-        hash = 37 * hash + Objects.hashCode(this.updated);
-        hash = 37 * hash + Objects.hashCode(this.deleted);
+        int hash = 7;
+        hash = 97 * hash + this.id;
+        hash = 97 * hash + Objects.hashCode(this.user);
+        hash = 97 * hash + Objects.hashCode(this.status);
+        hash = 97 * hash + Objects.hashCode(this.size);
+        hash = 97 * hash + Objects.hashCode(this.brand);
+        hash = 97 * hash + Objects.hashCode(this.urlBrand);
+        hash = 97 * hash + Objects.hashCode(this.colorProduct);
+        hash = 97 * hash + Objects.hashCode(this.code);
+        hash = 97 * hash + Objects.hashCode(this.name);
+        hash = 97 * hash + Objects.hashCode(this.model);
+        hash = 97 * hash + Objects.hashCode(this.description);
+        hash = 97 * hash + Objects.hashCode(this.details);
+        hash = 97 * hash + (int) (Double.doubleToLongBits(this.price) ^ (Double.doubleToLongBits(this.price) >>> 32));
+        hash = 97 * hash + Objects.hashCode(this.created);
+        hash = 97 * hash + Objects.hashCode(this.updated);
+        hash = 97 * hash + Objects.hashCode(this.deleted);
         return hash;
     }
 
@@ -223,6 +238,9 @@ public class ProductView {
         if (!Objects.equals(this.brand, other.brand)) {
             return false;
         }
+        if (!Objects.equals(this.urlBrand, other.urlBrand)) {
+            return false;
+        }
         if (!Objects.equals(this.colorProduct, other.colorProduct)) {
             return false;
         }
@@ -250,4 +268,6 @@ public class ProductView {
         return Objects.equals(this.deleted, other.deleted);
     }
 
+
+   
 }

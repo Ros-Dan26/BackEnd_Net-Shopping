@@ -12,19 +12,16 @@ import java.nio.file.Path;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 import java.util.NoSuchElementException;
-import static org.generation.netshoppingonline.controllers.user.UserEndPoints.HARD_DELETE;
-import static org.generation.netshoppingonline.controllers.user.UserEndPoints.PARAM_ID;
-import static org.generation.netshoppingonline.controllers.user.UserEndPoints.PARAM_USER;
 import org.generation.netshoppingonline.exceptions.products.ImageNotAddException;
 import org.generation.netshoppingonline.exceptions.products.ProductNotDeletedException;
 import org.generation.netshoppingonline.exceptions.products.ProductNotFoundException;
 import org.generation.netshoppingonline.exceptions.products.ProductNotSaveException;
-import org.generation.netshoppingonline.exceptions.user.UserNotDeleteException;
 import org.generation.netshoppingonline.models.product.Brand;
 import org.generation.netshoppingonline.models.product.ColorProduct;
 import org.generation.netshoppingonline.models.product.ImageView;
 import org.generation.netshoppingonline.models.product.Product;
 import org.generation.netshoppingonline.models.product.ProductView;
+import org.generation.netshoppingonline.models.product.ResponseProductImagesDTO;
 import org.generation.netshoppingonline.models.product.Size;
 import org.generation.netshoppingonline.models.product.Status;
 import org.generation.netshoppingonline.services.product.BrandService;
@@ -38,6 +35,7 @@ import org.generation.netshoppingonline.services.user.AvatarService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -55,6 +53,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
  * @author JesusFloresTemahuay
  */
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping(ProductsEndPoints.ROOT + ProductsEndPoints.PRODUCT_VIEW)
 public class ProductController implements ProductsEndPoints {
 
@@ -80,9 +79,9 @@ public class ProductController implements ProductsEndPoints {
         this.imageViewService = imageViewService;
         this.sizeService = sizeService;
         this.productService = productService;
-        this.statusService =statusService;
-        this.brandService =brandService;
-        this.colorProductService =colorProductService;
+        this.statusService = statusService;
+        this.brandService = brandService;
+        this.colorProductService = colorProductService;
     }
 
     @GetMapping(ALL)
@@ -92,11 +91,12 @@ public class ProductController implements ProductsEndPoints {
 
     @GetMapping(FIND + PARAM_ID)
     public ResponseEntity<?> findById(@PathVariable int id) {
-        ProductView p = null;
+        ResponseProductImagesDTO r = null;
         try {
-            p = productViewService.findById(id);
+
+            r = productViewService.findById(id);
             System.out.println("id:" + id);
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body(p);
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(r);
 
         } catch (ProductNotFoundException e) {
             System.out.println(e);
@@ -129,19 +129,19 @@ public class ProductController implements ProductsEndPoints {
         List<Size> p = sizeService.findAll();
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(p);
     }
-    
+
     @GetMapping(ALL_STATUS)
     public ResponseEntity<?> getAllStatus() {
         List<Status> p = statusService.findAll();
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(p);
     }
-    
+
     @GetMapping(ALL_BRANDS)
     public ResponseEntity<?> getAllBrands() {
         List<Brand> p = brandService.findAll();
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(p);
     }
-    
+
     @GetMapping(ALL_COLORS)
     public ResponseEntity<?> getAllColors() {
         List<ColorProduct> p = colorProductService.findAll();
@@ -263,7 +263,7 @@ public class ProductController implements ProductsEndPoints {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
     }
-    
+
     @PostMapping(UPDATE)
     public ResponseEntity<?> update(@RequestBody Product product) {
         Product p = null;
@@ -285,7 +285,7 @@ public class ProductController implements ProductsEndPoints {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
     }
-    
+
     @DeleteMapping(HARD_DELETE + PARAM_ID)
     public ResponseEntity<?> hardDelete(@PathVariable int id) {
         try {
@@ -300,7 +300,7 @@ public class ProductController implements ProductsEndPoints {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
-    
+
     @PutMapping(SOFT_DELETE + PARAM_ID)
     public ResponseEntity<?> softDelete(@PathVariable int id) {
         try {
@@ -315,4 +315,37 @@ public class ProductController implements ProductsEndPoints {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
-}   
+
+    @GetMapping(FILTER_BY_BRAND)
+    public ResponseEntity<?> filterByBrand(@PathVariable String brand) {
+        return ResponseEntity.ok().body(productViewService.filterByBrand(brand));
+    }
+
+    @GetMapping(FILTER_BY_SIZE)
+    public ResponseEntity<?> filterBySize(@PathVariable String size) {
+        return ResponseEntity.ok().body(productViewService.filterBySize(size));
+    }
+
+    /**
+     * Este metodo preferiblemente se considera en uso del valor hexadecimal
+     * para simplificar el parametro de la busqueda y evitar tener que etraer el
+     * nombre completo del color
+     *
+     * @param color
+     * @return
+     */
+    @GetMapping(FILTER_BY_COLOR)
+    public ResponseEntity<?> filterByColor(@PathVariable String color) {
+        return ResponseEntity.ok().body(productViewService.filterByColor(color));
+    }
+    
+    @GetMapping(FILTER_BY_PRICE)
+    public ResponseEntity<?> filterByPrice(@PathVariable double price) {
+        return ResponseEntity.ok().body(productViewService.filterByPrice(price));
+    }
+    
+    @GetMapping(FILTER_BY_STATUS)
+    public ResponseEntity<?> filterByStatus(@PathVariable String status) {
+        return ResponseEntity.ok().body(productViewService.filterByStatus(status));
+    }
+}
