@@ -41,10 +41,10 @@ public class AddressView {
     @Column
     private String name;
     
-    @Column(columnDefinition = "BIGINT")
+    @Column(columnDefinition = "INTEGER")
     private long number;
     
-    @Column(name = "cp_code", columnDefinition = "BIGINT")
+    @Column(name = "cp_code", columnDefinition = "INTEGER")
     private long cpCode;
     
     @Column(name = "full_address")

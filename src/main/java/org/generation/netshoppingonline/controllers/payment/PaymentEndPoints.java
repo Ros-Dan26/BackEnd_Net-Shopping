@@ -12,6 +12,6 @@ import org.generation.netshoppingonline.EndPoints;
  */
 public interface PaymentEndPoints  extends EndPoints{
     
-        String PARAM_ID_USER = "/images/{id}";
+
 
 }

@@ -21,7 +21,7 @@ public interface EndPoints {
     String USER = "/user";
     String ADDRESS = "/address";
     String PRODUCT_VIEW = "/product";
-    String PAYMENT_CD = "/cd";
+    String PAYMENT_CARD = "/card";
     String PAYMENT_TRANSFER = "/transfer";
     
     String ALL = "/all";

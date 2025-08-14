@@ -10,10 +10,12 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
+import org.generation.netshoppingonline.EndPoints;
+import org.springframework.http.HttpStatus;
 
 @RestController
-@RequestMapping("/api")
-public class CdCardController {
+@RequestMapping(EndPoints.ROOT + PaymentEndPoints.PAYMENT_CARD)
+public class CdCardController implements PaymentEndPoints {
 
     private final CdCardRepository repo;
     private final UserRepository userRepo;
@@ -23,45 +25,61 @@ public class CdCardController {
         this.userRepo = userRepo;
     }
 
-    /** GET /api/users/{userId}/cd-cards */
-    @GetMapping("/users/{userId}/cd-cards")
-    public ResponseEntity<List<CdCard>> findByUser(@PathVariable Integer userId) {
-        if (!userRepo.existsById(userId)) throw new UserNotFoundException("Usuario no encontrado: " + userId);
-        return ResponseEntity.ok(repo.findByIdUser(userId));
+    @GetMapping(FIND + USER + PARAM_ID)
+    public ResponseEntity<List<CdCard>> findByUser(@PathVariable Integer id) {
+        if (!userRepo.existsById(id)) {
+            throw new UserNotFoundException("Usuario no encontrado: " + id);
+        }
+        return ResponseEntity.ok(repo.findByIdUser(id));
     }
 
-    /** GET /api/cd-cards/{id} */
-    @GetMapping("/cd-cards/{id}")
+    @GetMapping(FIND + PARAM_ID)
     public ResponseEntity<CdCard> findOne(@PathVariable Integer id) {
         CdCard c = repo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Tarjeta no encontrada: " + id));
         return ResponseEntity.ok(c);
     }
 
-    /** POST /api/users/{userId}/cd-cards */
-    @PostMapping("/users/{userId}/cd-cards")
-    public ResponseEntity<CdCard> create(@PathVariable Integer userId, @RequestBody CdCard body) {
-        if (!userRepo.existsById(userId)) throw new UserNotFoundException("Usuario no encontrado: " + userId);
-        body.setId(null);
-        body.setIdUser(userId);
+    @PostMapping(SAVE)
+    public ResponseEntity<CdCard> create(@RequestBody CdCard body) {
+
         CdCard saved = repo.save(body);
-        return ResponseEntity.created(URI.create("/api/cd-cards/" + saved.getId())).body(saved);
+        if (saved != null) {
+            return ResponseEntity.created(URI.create("/api/cd-cards/" + saved.getId())).body(saved);
+        } else {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
     }
 
-    /** PUT /api/cd-cards/{id} */
-    @PutMapping("/cd-cards/{id}")
-    public ResponseEntity<CdCard> update(@PathVariable Integer id, @RequestBody CdCard body) {
-        CdCard current = repo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Tarjeta no encontrada: " + id));
-        body.setId(id);
-        body.setIdUser(current.getIdUser()); // no permitir cambiar dueño por aquí
-        CdCard saved = repo.save(body);
-        return ResponseEntity.ok(saved);
+    @PutMapping(UPDATE)
+    public ResponseEntity<CdCard> update(@RequestBody CdCard body) {
+        CdCard current = repo.findById(body.getId()).
+                orElseThrow(() -> new ResourceNotFoundException(
+                "Tarjeta no encontrada: "
+                + body.getId()));
+
+        if (current != null) {
+            CdCard saved = repo.save(body);
+            if (saved != null) {
+                return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
+            }
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
-    /** DELETE /api/cd-cards/{id} */
-    @DeleteMapping("/cd-cards/{id}")
+    @DeleteMapping(HARD_DELETE + PARAM_ID)
     public ResponseEntity<Void> delete(@PathVariable Integer id) {
-        CdCard c = repo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Tarjeta no encontrada: " + id));
-        repo.delete(c);
-        return ResponseEntity.noContent().build();
+        CdCard c = repo.findById(id).
+                orElseThrow(() -> new ResourceNotFoundException(
+                "Tarjeta no encontrada: "
+                + id));
+        try {
+            repo.delete(c);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
     }
 }
