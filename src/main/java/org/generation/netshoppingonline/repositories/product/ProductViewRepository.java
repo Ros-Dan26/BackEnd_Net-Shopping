@@ -31,6 +31,6 @@ public interface ProductViewRepository extends JpaRepository<ProductView, Intege
     @Query("SELECT u FROM ProductView u WHERE u.status = ?1")
     List<ProductView> filterByStatus(String status);
     
-    @Query("SELECT u FROM ProductView u WHERE u.name LIKE %:word% OR u.model LIKE %:word%")
+    @Query("SELECT u FROM ProductView u WHERE u.name LIKE %:word% OR u.model LIKE %:word% OR u.details LIKE %:word%")
     List<ProductView> filterByWord(String word);
 }

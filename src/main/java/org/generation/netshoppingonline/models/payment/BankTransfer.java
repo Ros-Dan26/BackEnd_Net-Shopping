@@ -2,7 +2,7 @@ package org.generation.netshoppingonline.models.payment;
 
 import jakarta.persistence.*;
 import java.util.Objects;
-
+/*
 @Entity
 @Table(name = "bank_transfers")
 public class BankTransfer {
@@ -50,3 +50,4 @@ public class BankTransfer {
     }
     @Override public int hashCode() { return Objects.hash(id); }
 }
+*/

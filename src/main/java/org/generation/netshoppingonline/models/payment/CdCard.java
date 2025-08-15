@@ -3,7 +3,7 @@ package org.generation.netshoppingonline.models.payment;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.Objects;
-
+/*
 @Entity
 @Table(name = "cd_cards")
 public class CdCard {
@@ -58,3 +58,4 @@ public class CdCard {
     }
     @Override public int hashCode() { return Objects.hash(id); }
 }
+*/

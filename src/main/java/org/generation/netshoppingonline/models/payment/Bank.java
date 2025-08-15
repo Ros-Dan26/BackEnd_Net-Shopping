@@ -3,7 +3,7 @@ package org.generation.netshoppingonline.models.payment;
 import jakarta.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
-
+/*
 @Entity
 @Table(name = "banks")
 public class Bank implements Serializable {
@@ -40,4 +40,4 @@ public class Bank implements Serializable {
         return Objects.equals(id, that.id);
     }
     @Override public int hashCode() { return Objects.hash(id); }
-}
+}*/
