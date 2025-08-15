@@ -29,4 +29,5 @@ public interface ProductsEndPoints extends EndPoints{
     String FILTER_BY_PRICE= "filter/price/{price}";
     String FILTER_BY_STATUS= "filter/status/{status}";
 
+    String WORD = "/word";
 }

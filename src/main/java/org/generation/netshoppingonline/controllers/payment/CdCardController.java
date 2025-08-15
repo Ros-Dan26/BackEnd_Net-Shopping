@@ -14,6 +14,7 @@ import org.generation.netshoppingonline.EndPoints;
 import org.springframework.http.HttpStatus;
 
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping(EndPoints.ROOT + PaymentEndPoints.PAYMENT_CARD)
 public class CdCardController implements PaymentEndPoints {
 

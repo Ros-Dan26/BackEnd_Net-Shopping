@@ -16,7 +16,7 @@ public interface EndPoints {
     String ROOT = "/api/v1/nso";
     String DIRECTORY = "/nso/bin";
     String URL_SERVER = "http://jft314.ddns.net";
-    String LOCAL_PATH = "/var/www/html/jftlab%s/%d";
+    String LOCAL_PATH = "/var/www/html/jftlab%s";
     
     String USER = "/user";
     String ADDRESS = "/address";

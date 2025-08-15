@@ -13,6 +13,7 @@ import org.generation.netshoppingonline.EndPoints;
 import org.springframework.http.HttpStatus;
 
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping(EndPoints.ROOT + PaymentEndPoints.PAYMENT_TRANSFER)
 public class BankTransferController implements PaymentEndPoints {
 

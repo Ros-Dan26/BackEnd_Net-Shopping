@@ -9,9 +9,13 @@ import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.PosixFilePermission;
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
 import org.generation.netshoppingonline.exceptions.products.ImageNotAddException;
 import org.generation.netshoppingonline.exceptions.products.ProductNotDeletedException;
 import org.generation.netshoppingonline.exceptions.products.ProductNotFoundException;
@@ -192,30 +196,35 @@ public class ProductController implements ProductsEndPoints {
             try {
                 String pathString = String.format(
                         LOCAL_PATH,
-                        DIRECTORY,
-                        id);
+                        DIRECTORY);
                 Path path = Path.of(pathString);
+
+                Set<PosixFilePermission> permissions = Set.of(
+                        PosixFilePermission.OWNER_READ,
+                        PosixFilePermission.GROUP_READ,
+                        PosixFilePermission.OTHERS_READ
+                );
+
                 if (!Files.exists(path)) {
                     Files.createDirectories(path);
                 }
                 String pathPublic = URL_SERVER.
                         concat(DIRECTORY).
                         concat(File.separator).
-                        concat(String.valueOf(id)).
                         concat(File.separator).
-                        concat(multipartFile.getOriginalFilename());
+                        concat(String.valueOf(System.currentTimeMillis()));
                 pathString = pathString.
                         concat(File.separator).
-                        concat(multipartFile.getOriginalFilename());
+                        concat(String.valueOf(System.currentTimeMillis()));
 
                 System.out.println("upload image to: " + pathString);
                 System.out.println("Public access: " + pathPublic);
 
-                ProductView p = (ProductView) findById(id).getBody();
+                ResponseProductImagesDTO p = (ResponseProductImagesDTO) findById(id).getBody();
                 if (p != null) {
                     imageViewService.addImageToProduct(pathPublic, id);
-                    File destinationFile = new File(pathString);
-                    multipartFile.transferTo(destinationFile);
+                    Files.copy(multipartFile.getInputStream(), Path.of(pathString));
+                    Files.setPosixFilePermissions(Path.of(pathString), permissions);
 
                     uri = ServletUriComponentsBuilder.
                             fromCurrentRequest().
@@ -321,6 +330,17 @@ public class ProductController implements ProductsEndPoints {
         return ResponseEntity.ok().body(productViewService.filterByBrand(brand));
     }
 
+    @GetMapping(WORD)
+    public ResponseEntity<?> filterByWord(@RequestParam String word) {
+        System.out.println(word);
+        String words[] = word.split("_");
+        Set<ResponseProductImagesDTO> l = new HashSet<>();
+        for (String w : words) {
+            l.addAll(productViewService.filterByWord(w));
+        }
+        return ResponseEntity.ok(l);
+    }
+
     @GetMapping(FILTER_BY_SIZE)
     public ResponseEntity<?> filterBySize(@PathVariable String size) {
         return ResponseEntity.ok().body(productViewService.filterBySize(size));
@@ -338,12 +358,12 @@ public class ProductController implements ProductsEndPoints {
     public ResponseEntity<?> filterByColor(@PathVariable String color) {
         return ResponseEntity.ok().body(productViewService.filterByColor(color));
     }
-    
+
     @GetMapping(FILTER_BY_PRICE)
     public ResponseEntity<?> filterByPrice(@PathVariable double price) {
         return ResponseEntity.ok().body(productViewService.filterByPrice(price));
     }
-    
+
     @GetMapping(FILTER_BY_STATUS)
     public ResponseEntity<?> filterByStatus(@PathVariable String status) {
         return ResponseEntity.ok().body(productViewService.filterByStatus(status));

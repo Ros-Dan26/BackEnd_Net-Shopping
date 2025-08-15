@@ -65,6 +65,22 @@ public class ProductViewService {
         }
     }
 
+    public List<ResponseProductImagesDTO> filterByWord(String word) throws ProductNotFoundException {
+        List<ProductView> products = productViewRepository.filterByWord(word);
+        List<ResponseProductImagesDTO> l = new ArrayList<>();
+
+        Iterator<ProductView> i = products.iterator();
+
+        while (i.hasNext()) {
+            ProductView next = i.next();
+            l.add(
+                    new ResponseProductImagesDTO(
+                            next,
+                            imageViewService.findImageByIdProduct(next.getId())));
+        }
+        return l;
+    }
+
     public List<ResponseProductImagesDTO> filterByBrand(String brand) throws ProductNotFoundException {
         List<ProductView> products = productViewRepository.filterByBrand(brand);
         List<ResponseProductImagesDTO> l = new ArrayList<>();
@@ -114,7 +130,7 @@ public class ProductViewService {
         }
         return l;
     }
-    
+
     public List<ResponseProductImagesDTO> filterByPrice(double price) throws
             ProductNotFoundException {
         List<ProductView> products = productViewRepository.filterByPrice(price);
@@ -131,7 +147,7 @@ public class ProductViewService {
         }
         return l;
     }
-    
+
     public List<ResponseProductImagesDTO> filterByStatus(String status) throws
             ProductNotFoundException {
         List<ProductView> products = productViewRepository.filterByStatus(status);
